@@ -1,14 +1,27 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Home</title>
+    <title>Daftar Laporan</title>
 </head>
 <body>
-    <h1>Selamat Datang di Kota Bandar Lampung ◝(ᵔᗜᵔ)◜ Loading ↻◌◌◌</h1>
+    <h1>Daftar Laporan</h1>
 
-    <a href="/">Home</a> |
-    <a href="/about/">About</a> |
-    <a href="/contacts/">Contacts</a>
+    <a href="{% url 'add_report' %}">Tambah Laporan</a>
 
+    <hr>
+
+    {% for report in reports %}
+        <h3>{{ report.title }}</h3>
+        <p>Category: {{ report.category }}</p>
+        <p>Description: {{ report.description }}</p>
+        <p>Location: {{ report.location }}</p>
+        <p>Status: {{ report.status }}</p>
+        <p>Created At: {{ report.created_at }}</p>
+
+        <a href="{% url 'edit_report' report.id %}">Edit</a>
+        <a href="{% url 'delete_report' report.id %}">Delete</a>
+
+        <hr>
+    {% endfor %}
 </body>
 </html>
