@@ -7,13 +7,13 @@
     <h1>Hapus Laporan</h1>
 
     <p>Apakah kamu yakin ingin menghapus laporan ini?</p>
-    <p>{{ report.title }}</p>
+    <p><strong>{{ report.title }}</strong></p>
 
     <form method="POST">
         {% csrf_token %}
-        <button type="submit">Hapus</button>
+        <button type="submit">Ya, Hapus</button>
     </form>
 
-    <a href="{% url 'home' %}">Kembali</a>
+    <a href="{% url 'report_list' %}">Batal</a>
 </body>
 </html>

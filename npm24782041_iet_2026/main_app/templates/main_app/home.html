@@ -18,10 +18,35 @@
         <p>Status: {{ report.status }}</p>
         <p>Created At: {{ report.created_at }}</p>
 
-        <a href="{% url 'edit_report' report.id %}">Edit</a>
-        <a href="{% url 'delete_report' report.id %}">Delete</a>
+        <a href="{% url 'report_detail' report.pk %}">Detail</a>
+        <a href="{% url 'edit_report' report.pk %}">Edit</a>
+        <a href="{% url 'delete_report' report.pk %}">Delete</a>
+
+        <br><br>
+
+        {% if report.status == 'REPORTED' %}
+            <form method="post" action="{% url 'update_status' report.pk %}">
+                {% csrf_token %}
+                <input type="hidden" name="status" value="VERIFIED">
+                <button type="submit">Verifikasi</button>
+            </form>
+        {% elif report.status == 'VERIFIED' %}
+            <form method="post" action="{% url 'update_status' report.pk %}">
+                {% csrf_token %}
+                <input type="hidden" name="status" value="IN_PROGRESS">
+                <button type="submit">Proses</button>
+            </form>
+        {% elif report.status == 'IN_PROGRESS' %}
+            <form method="post" action="{% url 'update_status' report.pk %}">
+                {% csrf_token %}
+                <input type="hidden" name="status" value="RESOLVED">
+                <button type="submit">Selesaikan</button>
+            </form>
+        {% endif %}
 
         <hr>
+    {% empty %}
+        <p>Belum ada laporan.</p>
     {% endfor %}
 </body>
 </html>

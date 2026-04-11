@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Detail Laporan</title>
+</head>
+<body>
+    <h1>Detail Laporan</h1>
+
+    <h3>{{ report.title }}</h3>
+    <p>Category: {{ report.category }}</p>
+    <p>Description: {{ report.description }}</p>
+    <p>Location: {{ report.location }}</p>
+    <p>Status: {{ report.status }}</p>
+    <p>Created At: {{ report.created_at }}</p>
+
+    <a href="{% url 'report_list' %}">Kembali</a>
+</body>
+</html>
