@@ -1,16 +1,48 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Contacts</title>
-</head>
-<body>
-    <h1>Contacts ☏ </h1>
-    <p>Hubungi kami di email: dinipratiwi@gmail.com</p>
-    <p>(˶ᵔᗜᵔ˶)ﾉﾞ✉</p>
+{% extends 'base.html' %}
 
-    <a href="/">Home</a> |
-    <a href="/about/">About</a> |
-    <a href="/contacts/">Contacts</a>
+{% block title %}Contact{% endblock %}
 
-</body>
-</html>
+{% block content %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Contact</li>
+    </ol>
+</nav>
+
+<div class="hero-box">
+    <h2>Contact</h2>
+    <p class="mb-0">
+        Hubungi kami jika terdapat pertanyaan atau kendala terkait penggunaan aplikasi.
+    </p>
+</div>
+
+<div class="row g-4">
+    <div class="col-md-4">
+        <div class="card info-card h-100">
+            <div class="card-body">
+                <h5>Email</h5>
+                <p class="mb-0">dinipratiwi@gmail.com</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card info-card h-100">
+            <div class="card-body">
+                <h5>Layanan</h5>
+                <p class="mb-0">Senin - Jumat, 08.00 - 16.00 WIB</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card info-card h-100">
+            <div class="card-body">
+                <h5>Alamat</h5>
+                <p class="mb-0">Kantor Pelayanan Kota LONG City</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

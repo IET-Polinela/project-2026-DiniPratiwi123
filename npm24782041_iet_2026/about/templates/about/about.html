@@ -1,16 +1,43 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>About</title>
-</head>
-<body>
-    <h1>「 ✦ WELCOME ✦ 」</h1>
-    <p>Ini adalah halaman tentang website kota saya.</p>
-    <p>°❀⋆.ೃ࿔*:･°❀⋆.ೃ࿔*:･</p>
+{% extends 'base.html' %}
 
-    <a href="/">Home</a> |
-    <a href="/about/">About</a> |
-    <a href="/contacts/">Contacts</a>
+{% block title %}About{% endblock %}
 
-</body>
-</html>
+{% block content %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+        <li class="breadcrumb-item active" aria-current="page">About</li>
+    </ol>
+</nav>
+
+<div class="hero-box">
+    <h2>Tentang LONG City</h2>
+    <p class="mb-0">
+        LONG City merupakan aplikasi pelaporan kota yang membantu masyarakat menyampaikan laporan secara terstruktur.
+    </p>
+</div>
+
+<div class="row g-4">
+    <div class="col-md-6">
+        <div class="card info-card h-100">
+            <div class="card-body">
+                <h4>Tujuan Aplikasi</h4>
+                <p class="mb-0">
+                    Aplikasi ini digunakan untuk mencatat, mengelola, dan memantau laporan masyarakat terkait kondisi lingkungan atau fasilitas umum.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card info-card h-100">
+            <div class="card-body">
+                <h4>Manfaat</h4>
+                <p class="mb-0">
+                    Dengan adanya sistem ini, proses pelaporan menjadi lebih jelas, status dapat dipantau, dan pengelolaan data menjadi lebih rapi.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

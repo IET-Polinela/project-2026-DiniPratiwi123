@@ -1,18 +1,39 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Detail Laporan</title>
-</head>
-<body>
-    <h1>Detail Laporan</h1>
+{% extends 'base.html' %}
 
-    <h3>{{ report.title }}</h3>
-    <p>Category: {{ report.category }}</p>
-    <p>Description: {{ report.description }}</p>
-    <p>Location: {{ report.location }}</p>
-    <p>Status: {{ report.status }}</p>
-    <p>Created At: {{ report.created_at }}</p>
+{% block title %}Detail Laporan{% endblock %}
 
-    <a href="{% url 'report_list' %}">Kembali</a>
-</body>
-</html>
+{% block content %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'report_list' %}">Reports</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Detail Laporan</li>
+    </ol>
+</nav>
+
+<div class="card">
+    <div class="card-body">
+        <h1 class="card-title mb-3">Detail Laporan</h1>
+
+        <p><strong>Title:</strong> {{ report.title }}</p>
+        <p><strong>Category:</strong> {{ report.category }}</p>
+        <p><strong>Description:</strong> {{ report.description }}</p>
+        <p><strong>Location:</strong> {{ report.location }}</p>
+        <p>
+            <strong>Status:</strong>
+            {% if report.status == 'REPORTED' %}
+                <span class="badge bg-secondary">REPORTED</span>
+            {% elif report.status == 'VERIFIED' %}
+                <span class="badge bg-primary">VERIFIED</span>
+            {% elif report.status == 'IN_PROGRESS' %}
+                <span class="badge bg-warning text-dark">IN PROGRESS</span>
+            {% elif report.status == 'RESOLVED' %}
+                <span class="badge bg-success">RESOLVED</span>
+            {% endif %}
+        </p>
+        <p><strong>Created At:</strong> {{ report.created_at }}</p>
+
+        <a href="{% url 'report_list' %}" class="btn btn-secondary">Kembali</a>
+    </div>
+</div>
+{% endblock %}
