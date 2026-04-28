@@ -68,6 +68,34 @@
                 <li class="nav-item">
                     <a class="nav-link" href="/contacts/">Contact</a>
                 </li>
+
+                {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <span class="nav-link fw-semibold">
+                            Halo, {{ user.username }}
+                            {% if user.is_admin %}
+                                | Admin
+                            {% else %}
+                                | Citizen
+                            {% endif %}
+                        </span>
+                    </li>
+                    <li class="nav-item">
+                        <form action="{% url 'logout' %}" method="post" class="d-inline">
+                            {% csrf_token %}
+                            <button type="submit" class="nav-link btn btn-link text-white" style="text-decoration: none;">
+                                Logout
+                            </button>
+                        </form>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'login' %}">Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'register' %}">Register</a>
+                    </li>
+                {% endif %}
             </ul>
         </div>
     </div>
