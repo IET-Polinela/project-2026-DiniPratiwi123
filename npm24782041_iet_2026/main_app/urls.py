@@ -7,6 +7,8 @@ from .views import (
     ReportUpdateView,
     ReportDeleteView,
     ReportUpdateStatusView,
+    ReportSearchJsonView,
+    ReportDetailJsonView,
 )
 
 urlpatterns = [
@@ -17,4 +19,7 @@ urlpatterns = [
     path('edit/<int:pk>/', ReportUpdateView.as_view(), name='edit_report'),
     path('delete/<int:pk>/', ReportDeleteView.as_view(), name='delete_report'),
     path('update-status/<int:pk>/', ReportUpdateStatusView.as_view(), name='update_status'),
+
+    path('api/reports/search/', ReportSearchJsonView.as_view(), name='report_search_api'),
+    path('api/report/<int:pk>/detail/', ReportDetailJsonView.as_view(), name='report_detail_api'),
 ]

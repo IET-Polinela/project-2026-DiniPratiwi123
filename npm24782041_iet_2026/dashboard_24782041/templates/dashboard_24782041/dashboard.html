@@ -1,0 +1,152 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="p-4 mb-4 bg-primary text-white rounded-3">
+        <h2 class="mb-1">Dashboard Statistik LONG City</h2>
+        <p class="mb-0">Ringkasan visual laporan berdasarkan status dan kategori.</p>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header fw-bold">
+                    Distribusi Status Laporan
+                </div>
+                <div class="card-body">
+                    <canvas id="statusChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header fw-bold">
+                    Distribusi Kategori Laporan
+                </div>
+                <div class="card-body">
+                    <canvas id="categoryChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4 mt-2">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header fw-bold">
+                    5 Laporan Terakhir Dilaporkan
+                </div>
+                <div class="card-body">
+                    <table class="table table-sm table-bordered">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Judul</th>
+                                <th>Kategori</th>
+                                <th>Lokasi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="latestReportedTable"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header fw-bold">
+                    5 Laporan Terakhir Selesai
+                </div>
+                <div class="card-body">
+                    <table class="table table-sm table-bordered">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Judul</th>
+                                <th>Kategori</th>
+                                <th>Lokasi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="latestResolvedTable"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    fetch("{% url 'dashboard_stats_api' %}")
+        .then(response => response.json())
+        .then(data => {
+            console.log('Data JSON Dashboard:', data);
+
+            const statusLabels = data.status_distribution.map(item => item.label);
+            const statusTotals = data.status_distribution.map(item => item.total);
+
+            new Chart(document.getElementById('statusChart'), {
+                type: 'doughnut',
+                data: {
+                    labels: statusLabels,
+                    datasets: [{
+                        data: statusTotals
+                    }]
+                }
+            });
+
+            const categoryLabels = data.category_distribution.map(item => item.category);
+            const categoryTotals = data.category_distribution.map(item => item.total);
+
+            new Chart(document.getElementById('categoryChart'), {
+                type: 'bar',
+                data: {
+                    labels: categoryLabels,
+                    datasets: [{
+                        label: 'Jumlah Laporan',
+                        data: categoryTotals
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+
+            renderTable('latestReportedTable', data.latest_reported);
+            renderTable('latestResolvedTable', data.latest_resolved);
+        })
+        .catch(error => {
+            console.error('Gagal mengambil data dashboard:', error);
+        });
+
+    function renderTable(tableId, reports) {
+        const tableBody = document.getElementById(tableId);
+        tableBody.innerHTML = '';
+
+        if (reports.length === 0) {
+            tableBody.innerHTML = `
+                <tr>
+                    <td colspan="3" class="text-center text-muted">Tidak ada data</td>
+                </tr>
+            `;
+            return;
+        }
+
+        reports.forEach(report => {
+            tableBody.innerHTML += `
+                <tr>
+                    <td>${report.title}</td>
+                    <td>${report.category}</td>
+                    <td>${report.location}</td>
+                </tr>
+            `;
+        });
+    }
+});
+</script>
+{% endblock %}

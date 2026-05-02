@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'about',
     'contacts',
     'usermanagement_24782041',
+    'dashboard_24782041',
 ]
 
 MIDDLEWARE = [
@@ -127,5 +128,7 @@ STATIC_URL = 'static/'
 
 
 AUTH_USER_MODEL = 'usermanagement_24782041.CustomUser'
+
+LOGIN_URL = '/users/login/'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
