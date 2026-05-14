@@ -38,6 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'rest_framework',
+
     'main_app',
     'about',
     'contacts',
@@ -83,7 +85,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'SmartCity_6',
         'USER': 'postgres',
-        'PASSWORD': 'tiwi1924',
+        'PASSWORD': '123456',
         'HOST': 'localhost',
         'PORT': '5432',
     }
