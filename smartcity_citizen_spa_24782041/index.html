@@ -9,46 +9,289 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
 
     <style>
+        :root {
+            --sky-blue: #bfe9ff;
+            --sky-blue-soft: #e9f8ff;
+            --soft-pink: #f7b6c8;
+            --soft-pink-light: #fde8ef;
+            --butter-yellow: #ffe08a;
+            --butter-yellow-light: #fff6d8;
+            --cream: #fffaf3;
+            --white: #ffffff;
+            --text-dark: #3f3438;
+            --text-main: #5d4c52;
+            --border-soft: #f0d5de;
+            --shadow-soft: rgba(160, 115, 130, 0.14);
+        }
+
         body {
-            background-color: #f5f7fb;
+            background: linear-gradient(180deg, #fff9fb 0%, #fffaf3 50%, #f7fcff 100%);
+            color: var(--text-main);
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .navbar {
+            background: linear-gradient(90deg, var(--sky-blue) 0%, var(--soft-pink) 48%, var(--butter-yellow) 100%) !important;
+            box-shadow: 0 6px 18px rgba(150, 110, 125, 0.15);
         }
 
         .navbar-brand {
+            font-weight: 800;
+            color: var(--text-dark) !important;
+        }
+
+        .navbar .nav-link {
+            color: var(--text-dark) !important;
             font-weight: 700;
         }
 
-        .hero-card {
-            border: none;
-            border-radius: 18px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+        .navbar .btn-light {
+            color: var(--text-dark);
+            background-color: rgba(255, 255, 255, 0.72);
+            border: 1px solid rgba(255, 255, 255, 0.85);
+            font-weight: 700;
         }
 
-        .dashboard-card {
-            border: none;
-            border-radius: 16px;
-            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+        .navbar .btn-light:hover {
+            background-color: #ffffff;
+            color: var(--text-dark);
+        }
+
+        .hero-card,
+        .dashboard-card,
+        .report-card,
+        .modal-content {
+            border: 1px solid rgba(240, 213, 222, 0.9);
+            border-radius: 18px;
+            box-shadow: 0 8px 24px var(--shadow-soft);
+            background: rgba(255, 255, 255, 0.94);
         }
 
         .feature-icon {
-            width: 44px;
-            height: 44px;
+            width: 48px;
+            height: 48px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            border-radius: 12px;
-            background-color: #e8f1ff;
-            color: #0d6efd;
+            border-radius: 14px;
+            background: linear-gradient(135deg, var(--sky-blue-soft), var(--soft-pink-light), var(--butter-yellow-light));
+            color: #7a5a64;
             font-size: 22px;
         }
 
         .min-vh-content {
             min-height: calc(100vh - 80px);
         }
+
+        .report-card {
+            border: none;
+            overflow: hidden;
+        }
+
+        .report-description {
+            min-height: 52px;
+        }
+
+        .summary-badge {
+            min-width: 28px;
+            border-radius: 999px;
+            font-weight: 700;
+        }
+
+        .progress {
+            height: 8px;
+            background-color: #f2edf0;
+            border-radius: 999px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(90deg, var(--soft-pink) 0%, var(--butter-yellow) 100%);
+            border: none;
+            color: var(--text-dark);
+            font-weight: 800;
+        }
+
+        .btn-primary:hover,
+        .btn-primary:focus {
+            background: linear-gradient(90deg, #f4a8bd 0%, #ffd66b 100%);
+            color: var(--text-dark);
+        }
+
+        .btn-outline-primary {
+            border-color: #e99bb3;
+            color: #b35c78;
+            font-weight: 700;
+        }
+
+        .btn-outline-primary:hover,
+        .btn-outline-primary:focus {
+            background-color: var(--soft-pink-light);
+            border-color: #e99bb3;
+            color: #9d4d68;
+        }
+
+        .btn-outline-secondary {
+            border-color: #e9c8d2;
+            color: #7b6570;
+            font-weight: 700;
+        }
+
+        .btn-outline-secondary:hover,
+        .btn-outline-secondary:focus {
+            background-color: #fff2f6;
+            border-color: #e9c8d2;
+            color: #674f5a;
+        }
+
+        .nav-tabs {
+            border-bottom: 1px solid var(--border-soft);
+        }
+
+        .nav-tabs .nav-link {
+            color: #6c5960;
+            border: 1px solid transparent;
+            border-top-left-radius: 12px;
+            border-top-right-radius: 12px;
+            font-weight: 800;
+        }
+
+        .nav-tabs .nav-link.active {
+            color: var(--text-dark);
+            background: linear-gradient(180deg, var(--sky-blue-soft) 0%, #fffaf6 100%);
+            border-color: var(--border-soft) var(--border-soft) #fffaf6;
+        }
+
+        .page-link {
+            color: #8c5d70;
+            border: 1px solid #efd2db;
+            background-color: #fff;
+        }
+
+        .page-link:hover {
+            color: #6f4c5a;
+            background-color: #fff3f7;
+            border-color: #ecc6d2;
+        }
+
+        .page-item.active .page-link {
+            background: linear-gradient(90deg, var(--sky-blue) 0%, var(--butter-yellow) 100%);
+            border-color: #ecd4ad;
+            color: var(--text-dark);
+            font-weight: 800;
+        }
+
+        .page-item.disabled .page-link {
+            color: #b9a8af;
+            background-color: #fff;
+            border-color: #f1dfe5;
+        }
+
+        .form-control,
+        .form-select {
+            border-radius: 12px;
+            border: 1px solid #edd2dc;
+            color: var(--text-dark);
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: #f1a7bd;
+            box-shadow: 0 0 0 0.2rem rgba(247, 182, 200, 0.25);
+        }
+
+        .modal-content {
+            overflow: hidden;
+        }
+
+        .modal-header {
+            background: linear-gradient(90deg, var(--sky-blue) 0%, var(--soft-pink) 50%, var(--butter-yellow) 100%);
+            border-bottom: none;
+        }
+
+        .modal-title {
+            color: var(--text-dark);
+            font-weight: 800;
+        }
+
+        .btn-close {
+            filter: none;
+            opacity: 0.75;
+        }
+
+        .modal-body,
+        .modal-footer {
+            background-color: #fffdfb;
+        }
+
+        .modal-footer {
+            border-top: 1px solid #f2dbe3;
+        }
+
+        .alert-primary {
+            background-color: var(--sky-blue-soft);
+            border-color: var(--sky-blue);
+            color: #4d6773;
+        }
+
+        .status-card-title {
+            color: var(--text-dark);
+            font-weight: 800;
+        }
+
+        .status-item {
+            font-weight: 600;
+        }
+
+        .small-muted {
+            color: #8d7a82;
+        }
+
+        .badge.bg-secondary {
+            background-color: #aaa2a7 !important;
+        }
+
+        .badge.bg-warning {
+            background-color: var(--butter-yellow) !important;
+            color: #5b4908 !important;
+        }
+
+        .badge.bg-info {
+            background-color: #7ed8f5 !important;
+            color: #134654 !important;
+        }
+
+        .badge.bg-primary {
+            background-color: #8fb8ff !important;
+        }
+
+        .badge.bg-success {
+            background-color: #75caa0 !important;
+        }
+
+        .progress-bar.bg-secondary {
+            background-color: #aaa2a7 !important;
+        }
+
+        .progress-bar.bg-warning {
+            background-color: #f3c447 !important;
+        }
+
+        .progress-bar.bg-info {
+            background-color: #46c7e8 !important;
+        }
+
+        .progress-bar.bg-primary {
+            background-color: #71a3ff !important;
+        }
+
+        .progress-bar.bg-success {
+            background-color: #43b77d !important;
+        }
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
-        <div class="container">
+    <nav class="navbar navbar-expand-lg navbar-dark shadow-sm">
+        <div class="container-fluid">
             <a class="navbar-brand" href="#dashboard">
                 <i class="bi bi-buildings-fill me-2"></i>
                 Smart City Portal
@@ -71,7 +314,65 @@
         </div>
     </nav>
 
-    <main class="container py-4 min-vh-content" id="app-content"></main>
+    <main class="container-fluid py-4 min-vh-content" id="app-content"></main>
+
+    <div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="reportModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="reportModalLabel">
+                        <i class="bi bi-pencil-square me-2"></i>
+                        Buat Laporan Baru
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+                </div>
+
+                <div class="modal-body">
+                    <div id="report-form-alert"></div>
+
+                    <form id="report-form">
+                        <div class="mb-3">
+                            <label for="report-title" class="form-label fw-semibold">Judul Laporan</label>
+                            <input type="text" class="form-control" id="report-title" placeholder="Contoh: Jalan rusak di sekitar kampus">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="report-category" class="form-label fw-semibold">Kategori</label>
+                            <select class="form-select" id="report-category">
+                                <option value="">Pilih Kategori...</option>
+                                <option value="Infrastruktur">Infrastruktur</option>
+                                <option value="Kebersihan (Sampah)">Kebersihan (Sampah)</option>
+                                <option value="Fasilitas Umum (Kursi/Komputer)">Fasilitas Umum (Kursi/Komputer)</option>
+                                <option value="Layanan Publik (Air/Listrik)">Layanan Publik (Air/Listrik)</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="report-location" class="form-label fw-semibold">Lokasi</label>
+                            <input type="text" class="form-control" id="report-location" placeholder="Contoh: Gedung Serba Guna Polinela">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="report-description" class="form-label fw-semibold">Deskripsi</label>
+                            <textarea class="form-control" id="report-description" rows="5" placeholder="Tuliskan detail laporan dengan jelas"></textarea>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                        Batal
+                    </button>
+                    <button type="button" class="btn btn-outline-primary" id="save-draft-button">
+                        Simpan Draft
+                    </button>
+                    <button type="button" class="btn btn-primary" id="submit-report-button">
+                        Ajukan
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
     <script src="js/api.js"></script>
