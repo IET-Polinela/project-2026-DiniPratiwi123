@@ -2,7 +2,9 @@ name: Deploy Frontend SPA to GitHub Pages
 
 on:
 push:
-branches: ["main", "master"]
+branches:
+- main
+- master
 
 workflow_dispatch:
 
@@ -30,7 +32,7 @@ steps:
   - name: Upload artifact
     uses: actions/upload-pages-artifact@v3
     with:
-      path: './smartcity_citizen_spa_24782041'
+      path: ./smartcity_citizen_spa_24782041
 
   - name: Deploy to GitHub Pages
     id: deployment
