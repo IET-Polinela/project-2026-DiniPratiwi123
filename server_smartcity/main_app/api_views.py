@@ -3,6 +3,7 @@ from rest_framework import permissions, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
+from drf_spectacular.utils import extend_schema
 
 from .models import Report
 from .permissions import IsCitizen, IsOwnerDraftOrAdminStatusOnly
@@ -56,6 +57,7 @@ class ReportViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(reporter=self.request.user)
 
+    @extend_schema(exclude=True)
     @action(detail=True, methods=['post'], url_path='submit')
     def submit(self, request, pk=None):
         report = self.get_object()
