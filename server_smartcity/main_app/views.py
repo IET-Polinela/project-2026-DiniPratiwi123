@@ -61,11 +61,24 @@ class ReportListView(ListView):
     template_name = 'main_app/home.html'
     context_object_name = 'reports'
 
+    def get_queryset(self):
+        """
+        Halaman laporan backend/admin tidak menampilkan DRAFT citizen.
+        Draft hanya dikelola oleh pemiliknya melalui Citizen SPA.
+        """
+        return Report.objects.exclude(status='DRAFT').order_by('-created_at')
+
 
 class ReportDetailView(DetailView):
     model = Report
     template_name = 'main_app/report_detail.html'
     context_object_name = 'report'
+
+    def get_queryset(self):
+        """
+        Detail laporan monolitik juga tidak membuka laporan DRAFT.
+        """
+        return Report.objects.exclude(status='DRAFT')
 
 
 class ReportCreateView(AdminRequiredMixin, CreateView):
@@ -147,7 +160,7 @@ class ReportSearchJsonView(View):
     def get(self, request):
         keyword = request.GET.get('q', '').strip()
 
-        reports = Report.objects.all().order_by('-created_at')
+        reports = Report.objects.exclude(status='DRAFT').order_by('-created_at')
 
         if keyword:
             reports = reports.filter(
@@ -177,8 +190,6 @@ class ReportSearchJsonView(View):
                 'created_at': report.created_at.strftime('%d-%m-%Y %H:%M'),
                 'detail_url': reverse('report_detail', kwargs={'pk': report.pk}),
                 'detail_api_url': reverse('report_detail_api', kwargs={'pk': report.pk}),
-                'edit_url': reverse('edit_report', kwargs={'pk': report.pk}),
-                'delete_url': reverse('delete_report', kwargs={'pk': report.pk}),
                 'update_status_url': reverse('update_status', kwargs={'pk': report.pk}),
                 'next_status': next_status,
             })
@@ -188,7 +199,7 @@ class ReportSearchJsonView(View):
 
 class ReportDetailJsonView(View):
     def get(self, request, pk):
-        report = get_object_or_404(Report, pk=pk)
+        report = get_object_or_404(Report.objects.exclude(status='DRAFT'), pk=pk)
 
         data = {
             'id': report.id,

@@ -358,16 +358,6 @@
         background: #e6f7ff !important;
     }
 
-    .btn-edit-cute {
-        color: #6b4d00 !important;
-        background: #fff0b8 !important;
-    }
-
-    .btn-delete-cute {
-        color: #ffffff !important;
-        background: #ee7d9d !important;
-    }
-
     .btn-status-cute {
         color: #745f69 !important;
         background: #f5e8ee !important;
@@ -504,7 +494,7 @@
         <div>
             <h1>Daftar Laporan</h1>
             <small>
-                Pantau semua laporan warga dalam satu halaman.
+                Pantau laporan warga yang sudah diajukan. Draft citizen tidak ditampilkan di portal admin.
             </small>
         </div>
 
@@ -532,7 +522,7 @@
         </div>
 
         <small class="search-help">
-            Hasil pencarian muncul otomatis tanpa reload halaman.
+            Hasil pencarian muncul otomatis tanpa reload halaman. Laporan DRAFT citizen tidak ditampilkan.
         </small>
     </div>
 
@@ -545,7 +535,7 @@
                         <th>Kategori</th>
                         <th>Lokasi</th>
                         <th>Status</th>
-                        <th width="300">Aksi</th>
+                        <th width="240">Aksi</th>
                     </tr>
                 </thead>
 
@@ -580,14 +570,6 @@
                             </button>
 
                             {% if user.is_authenticated and user.is_admin or user.is_superuser %}
-                                <a href="{% url 'edit_report' report.pk %}" class="btn btn-sm report-action-btn btn-edit-cute">
-                                    Edit
-                                </a>
-
-                                <a href="{% url 'delete_report' report.pk %}" class="btn btn-sm report-action-btn btn-delete-cute">
-                                    Hapus
-                                </a>
-
                                 {% if report.status == 'REPORTED' %}
                                 <form method="post" action="{% url 'update_status' report.pk %}" class="d-inline">
                                     {% csrf_token %}
@@ -619,7 +601,7 @@
                     {% empty %}
                     <tr>
                         <td colspan="5" class="text-center empty-report-row">
-                            Belum ada laporan 🌙
+                            Belum ada laporan yang sudah diajukan 🌙
                         </td>
                     </tr>
                     {% endfor %}
@@ -660,6 +642,12 @@
                         </tr>
                         <tr>
                             <th>Dibuat Pada</th>
+                            <td id="modalReportCreatedAt"></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+       </th>
                             <td id="modalReportCreatedAt"></td>
                         </tr>
                     </table>
@@ -720,7 +708,7 @@ document.addEventListener('DOMContentLoaded', function () {
             reportTableBody.innerHTML = `
                 <tr>
                     <td colspan="5" class="text-center empty-report-row">
-                        Belum ada laporan 🌙
+                        Belum ada laporan yang sudah diajukan 🌙
                     </td>
                 </tr>
             `;
@@ -730,33 +718,23 @@ document.addEventListener('DOMContentLoaded', function () {
         reports.forEach(report => {
             let adminButtons = '';
 
-            if (canManage) {
-                let statusButton = '';
+            if (canManage && report.next_status) {
+                let buttonClass = 'btn-status-cute';
 
-                if (report.next_status) {
-                    let buttonClass = 'btn-status-cute';
-
-                    if (report.next_status.value === 'IN_PROGRESS') {
-                        buttonClass = 'btn-process-cute';
-                    } else if (report.next_status.value === 'RESOLVED') {
-                        buttonClass = 'btn-finish-cute';
-                    }
-
-                    statusButton = `
-                        <form method="post" action="${report.update_status_url}" class="d-inline">
-                            <input type="hidden" name="csrfmiddlewaretoken" value="${csrfToken}">
-                            <input type="hidden" name="status" value="${escapeHTML(report.next_status.value)}">
-                            <button type="submit" class="btn btn-sm report-action-btn ${buttonClass}" onclick="return confirm('Ubah status laporan menjadi ${escapeHTML(report.next_status.value)}?')">
-                                ${escapeHTML(report.next_status.label)}
-                            </button>
-                        </form>
-                    `;
+                if (report.next_status.value === 'IN_PROGRESS') {
+                    buttonClass = 'btn-process-cute';
+                } else if (report.next_status.value === 'RESOLVED') {
+                    buttonClass = 'btn-finish-cute';
                 }
 
                 adminButtons = `
-                    <a href="${report.edit_url}" class="btn btn-sm report-action-btn btn-edit-cute">Edit</a>
-                    <a href="${report.delete_url}" class="btn btn-sm report-action-btn btn-delete-cute">Hapus</a>
-                    ${statusButton}
+                    <form method="post" action="${report.update_status_url}" class="d-inline">
+                        <input type="hidden" name="csrfmiddlewaretoken" value="${csrfToken}">
+                        <input type="hidden" name="status" value="${escapeHTML(report.next_status.value)}">
+                        <button type="submit" class="btn btn-sm report-action-btn ${buttonClass}" onclick="return confirm('Ubah status laporan menjadi ${escapeHTML(report.next_status.value)}?')">
+                            ${escapeHTML(report.next_status.label)}
+                        </button>
+                    </form>
                 `;
             }
 

@@ -38,12 +38,9 @@ class ReportSerializer(serializers.ModelSerializer):
         if not request or not request.user or not request.user.is_authenticated:
             return 'Warga Anonim'
 
-        # Pada Feed Kota, semua identitas pelapor wajib disamarkan,
-        # termasuk laporan milik user yang sedang login.
         if request.query_params.get('tab') == 'feed':
             return 'Warga Anonim'
 
-        # Pada tab my_reports/detail milik sendiri, nama asli boleh tampil.
         if obj.reporter_id == request.user.id:
             return obj.reporter.username
 
@@ -66,13 +63,11 @@ class ReportSerializer(serializers.ModelSerializer):
 
         is_admin = getattr(user, 'is_admin', False) or user.is_superuser
 
-        # Saat Citizen membuat laporan, status selalu dipaksa menjadi DRAFT.
         if self.instance is None:
             if not is_admin:
                 attrs['status'] = 'DRAFT'
             return attrs
 
-        # Admin hanya boleh mengubah field status.
         if is_admin:
             sent_fields = set(attrs.keys())
             allowed_fields = {'status'}
@@ -84,7 +79,6 @@ class ReportSerializer(serializers.ModelSerializer):
 
             return attrs
 
-        # Citizen tidak boleh mengubah status lewat PUT/PATCH biasa.
         if 'status' in attrs and attrs['status'] != self.instance.status:
             raise serializers.ValidationError(
                 {
@@ -93,3 +87,17 @@ class ReportSerializer(serializers.ModelSerializer):
             )
 
         return attrs
+
+    def create(self, validated_data):
+        request = self.context.get('request')
+        user = request.user if request else None
+
+        is_admin = False
+
+        if user and user.is_authenticated:
+            is_admin = getattr(user, 'is_admin', False) or user.is_superuser
+
+        if not is_admin:
+            validated_data['status'] = 'DRAFT'
+
+        return super().create(validated_data)

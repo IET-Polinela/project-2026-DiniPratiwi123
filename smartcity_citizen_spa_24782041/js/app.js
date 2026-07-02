@@ -241,7 +241,7 @@ function renderActionButtons(report) {
     }
 
     return `
-        <div class="d-flex gap-2">
+        <div class="d-flex gap-2 flex-wrap">
             <button type="button" class="btn btn-outline-primary btn-sm" onclick="editDraft(${report.id})">
                 <i class="bi bi-pencil-square me-1"></i>
                 Edit
@@ -250,6 +250,11 @@ function renderActionButtons(report) {
             <button type="button" class="btn btn-primary btn-sm" onclick="submitDraft(${report.id})">
                 <i class="bi bi-send-fill me-1"></i>
                 Ajukan
+            </button>
+
+            <button type="button" class="btn btn-outline-danger btn-sm" onclick="deleteDraft(${report.id})">
+                <i class="bi bi-trash me-1"></i>
+                Hapus
             </button>
         </div>
     `;
@@ -523,6 +528,24 @@ async function submitDraft(id) {
 
     await loadDashboardData('my_reports', 1);
     showDashboardAlert('Draft berhasil diajukan menjadi laporan.', 'success');
+}
+
+async function deleteDraft(id) {
+    const confirmation = confirm('Hapus draft laporan ini? Draft yang sudah dihapus tidak dapat dikembalikan.');
+
+    if (!confirmation) {
+        return;
+    }
+
+    const result = await requestAPI(`/api/report/${id}/`, 'DELETE');
+
+    if (!result.ok || result.status !== 204) {
+        showDashboardAlert(getErrorMessage(result.data), 'danger');
+        return;
+    }
+
+    await loadDashboardData('my_reports', 1);
+    showDashboardAlert('Draft laporan berhasil dihapus.', 'success');
 }
 
 function getReportPayload() {
