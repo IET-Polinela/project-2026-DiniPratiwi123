@@ -3,25 +3,190 @@
 {% block title %}Hapus Laporan{% endblock %}
 
 {% block content %}
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
-        <li class="breadcrumb-item"><a href="{% url 'report_list' %}">Reports</a></li>
-        <li class="breadcrumb-item active" aria-current="page">Hapus Laporan</li>
-    </ol>
-</nav>
+<style>
+    .cute-delete-page {
+        color: #573845;
+    }
 
-<div class="card">
-    <div class="card-body">
-        <h1 class="card-title mb-3">Hapus Laporan</h1>
-        <p>Apakah kamu yakin ingin menghapus laporan ini?</p>
-        <p><strong>{{ report.title }}</strong></p>
+    .cute-delete-wrapper {
+        max-width: 760px;
+        margin: 0 auto;
+    }
 
-        <form method="POST">
-            {% csrf_token %}
-            <button type="submit" class="btn btn-danger">Ya, Hapus</button>
-            <a href="{% url 'report_list' %}" class="btn btn-secondary">Batal</a>
-        </form>
+    .cute-delete-card {
+        position: relative;
+        overflow: hidden;
+        padding: 34px;
+        border-radius: 32px;
+        background:
+            radial-gradient(circle at 88% 16%, rgba(255, 216, 107, 0.55), transparent 28%),
+            radial-gradient(circle at 12% 90%, rgba(255, 182, 206, 0.48), transparent 32%),
+            linear-gradient(135deg, #fff8df 0%, #fff0f7 55%, #fffaf0 100%);
+        border: 1px solid rgba(255, 182, 206, 0.5);
+        box-shadow: 0 18px 45px rgba(255, 127, 168, 0.16);
+    }
+
+    .cute-delete-card::after {
+        content: "🗑️ 🌷 💗";
+        position: absolute;
+        right: 28px;
+        bottom: 22px;
+        font-size: clamp(42px, 7vw, 78px);
+        letter-spacing: 8px;
+        opacity: 0.72;
+    }
+
+    .cute-badge-title {
+        position: relative;
+        z-index: 1;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 9px 16px;
+        margin-bottom: 16px;
+        border-radius: 999px;
+        color: #c74474;
+        background: rgba(255, 224, 235, 0.92);
+        font-weight: 900;
+    }
+
+    .cute-delete-card h1 {
+        position: relative;
+        z-index: 1;
+        color: #573845;
+        font-weight: 900;
+        letter-spacing: -0.8px;
+    }
+
+    .cute-delete-card p {
+        position: relative;
+        z-index: 1;
+        color: #80636e;
+        font-weight: 700;
+        line-height: 1.7;
+    }
+
+    .cute-warning-box {
+        position: relative;
+        z-index: 1;
+        margin: 22px 0;
+        padding: 20px;
+        border-radius: 24px;
+        background: rgba(255, 255, 255, 0.78);
+        border: 1px solid rgba(255, 182, 206, 0.45);
+        box-shadow: 0 12px 28px rgba(255, 127, 168, 0.12);
+    }
+
+    .cute-report-title {
+        display: block;
+        margin-top: 8px;
+        padding: 14px 18px;
+        border-radius: 18px;
+        color: #573845;
+        background: #fffafe;
+        border: 1px solid rgba(255, 182, 206, 0.42);
+        font-size: 18px;
+        font-weight: 900;
+    }
+
+    .cute-actions {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 24px;
+    }
+
+    .cute-btn {
+        border-radius: 999px !important;
+        border: none !important;
+        padding: 11px 20px;
+        font-weight: 900;
+        transition: 0.2s ease;
+    }
+
+    .cute-btn:hover {
+        transform: translateY(-1px);
+    }
+
+    .cute-btn-danger {
+        color: white !important;
+        background: linear-gradient(135deg, #ff6f8f, #ff9aad) !important;
+        box-shadow: 0 10px 22px rgba(255, 111, 143, 0.26);
+    }
+
+    .cute-btn-secondary {
+        color: #73515e !important;
+        background: linear-gradient(135deg, #f3e4eb, #ffffff) !important;
+        border: 1px solid rgba(255, 182, 206, 0.45) !important;
+    }
+
+    @media (max-width: 768px) {
+        .cute-delete-card {
+            padding: 26px;
+        }
+
+        .cute-delete-card::after {
+            position: static;
+            display: block;
+            margin-top: 22px;
+            font-size: 44px;
+            letter-spacing: 4px;
+        }
+    }
+</style>
+
+<div class="cute-delete-page">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="{% url 'home' %}">Home</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="{% url 'report_list' %}">Reports</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">Hapus Laporan</li>
+        </ol>
+    </nav>
+
+    <div class="cute-delete-wrapper">
+        <section class="cute-delete-card">
+            <span class="cute-badge-title">
+                ✨ Konfirmasi Hapus
+            </span>
+
+            <h1 class="mb-3">Hapus Laporan?</h1>
+
+            <p class="mb-0">
+                Apakah kamu yakin ingin menghapus laporan ini?
+                Tindakan ini akan menghapus data laporan dari daftar.
+            </p>
+
+            <div class="cute-warning-box">
+                <small class="text-muted fw-bold">
+                    Laporan yang akan dihapus:
+                </small>
+
+                <span class="cute-report-title">
+                    {{ report.title }}
+                </span>
+            </div>
+
+            <form method="POST">
+                {% csrf_token %}
+
+                <div class="cute-actions">
+                    <button type="submit" class="btn cute-btn cute-btn-danger">
+                        🗑️ Ya, Hapus
+                    </button>
+
+                    <a href="{% url 'report_list' %}" class="btn cute-btn cute-btn-secondary">
+                        Batal
+                    </a>
+                </div>
+            </form>
+        </section>
     </div>
 </div>
 {% endblock %}

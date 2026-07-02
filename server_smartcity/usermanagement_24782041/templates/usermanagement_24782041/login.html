@@ -3,47 +3,509 @@
 {% block title %}Login{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-5">
-        <div class="card shadow-sm border-0 rounded-4">
-            <div class="card-body p-4">
-                <h2 class="text-center mb-4 fw-bold">Login</h2>
+<style>
+    body {
+        background:
+            radial-gradient(circle at 12% 12%, rgba(255, 216, 107, 0.34), transparent 28%),
+            radial-gradient(circle at 88% 16%, rgba(255, 166, 196, 0.32), transparent 30%),
+            linear-gradient(135deg, #fffaf0 0%, #fff2f8 48%, #fff8dc 100%) !important;
+        color: #4d3340;
+    }
 
-                <form method="post" novalidate>
-                    {% csrf_token %}
+    .navbar,
+    .navbar.bg-primary,
+    .navbar-dark,
+    .bg-primary {
+        background: rgba(255, 255, 255, 0.84) !important;
+        backdrop-filter: blur(18px);
+        border-bottom: 1px solid rgba(255, 182, 206, 0.45);
+        box-shadow: 0 12px 35px rgba(255, 127, 168, 0.12);
+    }
 
-                    <div class="mb-3">
-                        <label for="{{ form.username.id_for_label }}" class="form-label">Nama pengguna</label>
-                        {{ form.username }}
-                        {% if form.username.errors %}
-                            <div class="text-danger small mt-1">
-                                {{ form.username.errors }}
-                            </div>
-                        {% endif %}
+    .navbar-brand {
+        color: #ff6f9e !important;
+        font-weight: 900;
+        letter-spacing: -0.4px;
+    }
+
+    .navbar-brand::before {
+        content: "💗";
+        margin-right: 8px;
+    }
+
+    .navbar .nav-link {
+        color: #6b4a58 !important;
+        font-weight: 800;
+        border-radius: 999px;
+        padding: 8px 14px !important;
+        margin: 0 2px;
+        transition: 0.2s ease;
+    }
+
+    .navbar .nav-link:hover {
+        color: #ff5f94 !important;
+        background: #ffe5ef;
+    }
+
+    .login-page {
+        max-width: 1080px;
+        margin: 0 auto;
+        min-height: calc(100vh - 170px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .login-shell {
+        width: 100%;
+        overflow: hidden;
+        border-radius: 42px;
+        background: rgba(255, 255, 255, 0.86);
+        border: 1px solid rgba(255, 182, 206, 0.55);
+        box-shadow: 0 26px 70px rgba(255, 127, 168, 0.19);
+    }
+
+    .login-art {
+        position: relative;
+        min-height: 560px;
+        height: 100%;
+        padding: 46px;
+        background:
+            radial-gradient(circle at 78% 16%, rgba(255, 225, 142, 0.74), transparent 26%),
+            radial-gradient(circle at 16% 88%, rgba(255, 182, 206, 0.58), transparent 30%),
+            linear-gradient(135deg, #fff7df 0%, #fff0f7 52%, #fffaf0 100%);
+    }
+
+    .login-art::before {
+        content: "";
+        position: absolute;
+        inset: 18px;
+        border-radius: 34px;
+        border: 1px dashed rgba(255, 143, 177, 0.34);
+        pointer-events: none;
+    }
+
+    .login-pill {
+        position: relative;
+        z-index: 2;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 18px;
+        margin-bottom: 20px;
+        border-radius: 999px;
+        color: #d7477a;
+        background: linear-gradient(135deg, #ffe3ee, #fff3c9);
+        border: 1px solid rgba(255, 143, 177, 0.35);
+        font-weight: 900;
+        box-shadow: 0 12px 24px rgba(255, 127, 168, 0.14);
+    }
+
+    .login-art h1 {
+        position: relative;
+        z-index: 2;
+        max-width: 440px;
+        color: #4d3340;
+        font-size: clamp(36px, 4.5vw, 58px);
+        font-weight: 950;
+        line-height: 1.08;
+        letter-spacing: -1.6px;
+    }
+
+    .login-art p {
+        position: relative;
+        z-index: 2;
+        max-width: 450px;
+        margin-top: 18px;
+        color: #7b5d69;
+        font-size: 17px;
+        font-weight: 650;
+        line-height: 1.8;
+    }
+
+    .mini-city {
+        position: absolute;
+        left: 42px;
+        right: 42px;
+        bottom: 38px;
+        height: 210px;
+    }
+
+    .city-cloud {
+        position: absolute;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.88);
+        box-shadow: 0 14px 30px rgba(255, 182, 206, 0.18);
+    }
+
+    .city-cloud.one {
+        width: 110px;
+        height: 42px;
+        top: 0;
+        left: 30px;
+    }
+
+    .city-cloud.two {
+        width: 130px;
+        height: 48px;
+        top: 22px;
+        right: 30px;
+    }
+
+    .city-sun {
+        position: absolute;
+        top: 4px;
+        left: 50%;
+        width: 74px;
+        height: 74px;
+        transform: translateX(-50%);
+        border-radius: 50%;
+        background: linear-gradient(135deg, #ffd86b, #fff0a8);
+        box-shadow: 0 12px 35px rgba(255, 216, 107, 0.42);
+    }
+
+    .city-building {
+        position: absolute;
+        bottom: 44px;
+        border-radius: 20px 20px 12px 12px;
+        border: 4px solid rgba(255, 255, 255, 0.68);
+        box-shadow: 0 16px 30px rgba(137, 83, 102, 0.16);
+    }
+
+    .city-building::before,
+    .city-building::after {
+        content: "";
+        position: absolute;
+        top: 20px;
+        width: 13px;
+        height: 15px;
+        border-radius: 6px;
+        background: rgba(255, 255, 255, 0.78);
+    }
+
+    .city-building::before {
+        left: 18px;
+    }
+
+    .city-building::after {
+        right: 18px;
+    }
+
+    .b1 {
+        left: 30px;
+        width: 78px;
+        height: 112px;
+        background: linear-gradient(180deg, #ff9fbd, #ffd0df);
+    }
+
+    .b2 {
+        left: 112px;
+        width: 90px;
+        height: 150px;
+        background: linear-gradient(180deg, #ffe08a, #fff1be);
+    }
+
+    .b3 {
+        left: 208px;
+        width: 96px;
+        height: 176px;
+        background: linear-gradient(180deg, #b9e9ff, #e4f8ff);
+    }
+
+    .b4 {
+        left: 310px;
+        width: 80px;
+        height: 126px;
+        background: linear-gradient(180deg, #ffc2d7, #ffe3ed);
+    }
+
+    .city-road {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 54px;
+        border-radius: 999px 999px 0 0;
+        background: linear-gradient(180deg, #d7c7ff, #c9b8f7);
+    }
+
+    .city-road::after {
+        content: "";
+        position: absolute;
+        left: 54px;
+        right: 54px;
+        top: 25px;
+        height: 5px;
+        border-radius: 999px;
+        background: repeating-linear-gradient(
+            90deg,
+            rgba(255, 255, 255, 0.86) 0 30px,
+            transparent 30px 55px
+        );
+    }
+
+    .floating-heart {
+        position: absolute;
+        right: 8px;
+        top: 78px;
+        width: 62px;
+        height: 62px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 24px;
+        background: rgba(255, 231, 239, 0.92);
+        box-shadow: 0 14px 32px rgba(255, 127, 168, 0.22);
+        font-size: 30px;
+        animation: floatHeart 3s ease-in-out infinite;
+    }
+
+    @keyframes floatHeart {
+        0%, 100% {
+            transform: translateY(0);
+        }
+        50% {
+            transform: translateY(-10px);
+        }
+    }
+
+    .login-form-side {
+        height: 100%;
+        padding: 52px;
+        background: rgba(255, 255, 255, 0.94);
+    }
+
+    .login-icon {
+        width: 72px;
+        height: 72px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 16px;
+        border-radius: 26px;
+        background: linear-gradient(135deg, #ffe1ec, #fff2bd);
+        color: #ff6f9e;
+        font-size: 34px;
+        box-shadow: 0 14px 30px rgba(255, 127, 168, 0.16);
+    }
+
+    .login-form-side h2 {
+        color: #4d3340;
+        font-weight: 950;
+        letter-spacing: -0.8px;
+    }
+
+    .login-subtitle {
+        color: #7b5d69;
+        font-weight: 650;
+    }
+
+    .login-form-side label {
+        margin-bottom: 8px;
+        color: #4d3340;
+        font-weight: 900;
+    }
+
+    .login-form-side input {
+        width: 100%;
+        min-height: 52px;
+        padding: 12px 18px;
+        border-radius: 18px;
+        border: 1px solid rgba(255, 127, 168, 0.35);
+        background: #fffafe;
+        color: #4d3340;
+        font-weight: 700;
+        box-shadow: none;
+        outline: none;
+        transition: 0.2s ease;
+    }
+
+    .login-form-side input:focus {
+        border-color: #ff7fa8;
+        box-shadow: 0 0 0 0.24rem rgba(255, 127, 168, 0.16);
+    }
+
+    .login-form-side input::placeholder {
+        color: #b995a3;
+    }
+
+    .login-submit-btn {
+        width: 100%;
+        min-height: 52px;
+        border: none;
+        border-radius: 999px;
+        color: white;
+        background: linear-gradient(135deg, #ff6f9e, #ff9fbd);
+        font-weight: 950;
+        box-shadow: 0 16px 32px rgba(255, 111, 158, 0.28);
+        transition: 0.22s ease;
+    }
+
+    .login-submit-btn:hover {
+        transform: translateY(-3px);
+        color: white;
+    }
+
+    .login-register-text {
+        color: #7b5d69;
+        font-weight: 700;
+    }
+
+    .login-register-text a {
+        color: #ff6f9e;
+        font-weight: 950;
+        text-decoration: none;
+    }
+
+    .login-register-text a:hover {
+        color: #d7477a;
+    }
+
+    .login-error {
+        margin-top: 6px;
+        color: #d7477a;
+        font-size: 14px;
+        font-weight: 800;
+    }
+
+    .alert {
+        border: none;
+        border-radius: 18px;
+        color: #a73756;
+        background: #ffe1ea;
+        font-weight: 750;
+    }
+
+    @media (max-width: 992px) {
+        .login-art {
+            min-height: 440px;
+        }
+
+        .login-form-side {
+            padding: 34px 26px;
+        }
+
+        .mini-city {
+            transform: scale(0.82);
+            transform-origin: left bottom;
+            left: 30px;
+            right: 20px;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .login-shell {
+            border-radius: 30px;
+        }
+
+        .login-art {
+            padding: 32px 26px;
+            min-height: 390px;
+        }
+
+        .login-art h1 {
+            letter-spacing: -1px;
+        }
+
+        .mini-city {
+            display: none;
+        }
+    }
+</style>
+
+<div class="login-page">
+    <div class="login-shell">
+        <div class="row g-0">
+            <div class="col-lg-6">
+                <section class="login-art">
+                    <span class="login-pill">
+                        ✨ Portal Warga LONG City
+                    </span>
+
+                    <h1>
+                        Masuk ke kota yang manis dan ceria 💗
+                    </h1>
+
+                
+
+                    <div class="mini-city">
+                        <div class="city-cloud one"></div>
+                        <div class="city-cloud two"></div>
+                        <div class="city-sun"></div>
+
+                        <div class="city-building b1"></div>
+                        <div class="city-building b2"></div>
+                        <div class="city-building b3"></div>
+                        <div class="city-building b4"></div>
+
+                        <div class="floating-heart">💗</div>
+                        <div class="city-road"></div>
                     </div>
+                </section>
+            </div>
 
-                    <div class="mb-4">
-                        <label for="{{ form.password.id_for_label }}" class="form-label">Sandi</label>
-                        {{ form.password }}
-                        {% if form.password.errors %}
-                            <div class="text-danger small mt-1">
-                                {{ form.password.errors }}
-                            </div>
-                        {% endif %}
-                    </div>
-
-                    {% if form.non_field_errors %}
-                        <div class="alert alert-danger py-2">
-                            {{ form.non_field_errors }}
+            <div class="col-lg-6">
+                <section class="login-form-side d-flex flex-column justify-content-center">
+                    <div class="text-center mb-4">
+                        <div class="login-icon">
+                            <i class="bi bi-person-heart"></i>
                         </div>
-                    {% endif %}
 
-                    <button type="submit" class="btn btn-primary w-100 rounded-3">Login</button>
-                </form>
+                        <h2 class="mb-2">Login</h2>
 
-                <p class="text-center mt-4 mb-0">
-                    Belum punya akun? <a href="{% url 'register' %}">Daftar</a>
-                </p>
+                        <p class="login-subtitle mb-0">
+                            Masukkan akun kamu untuk melanjutkan.
+                        </p>
+                    </div>
+
+                    <form method="post" novalidate>
+                        {% csrf_token %}
+
+                        <div class="mb-3">
+                            <label for="{{ form.username.id_for_label }}" class="form-label">
+                                Nama pengguna
+                            </label>
+                            {{ form.username }}
+
+                            {% if form.username.errors %}
+                                <div class="login-error">
+                                    {{ form.username.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="{{ form.password.id_for_label }}" class="form-label">
+                                Sandi
+                            </label>
+                            {{ form.password }}
+
+                            {% if form.password.errors %}
+                                <div class="login-error">
+                                    {{ form.password.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        {% if form.non_field_errors %}
+                            <div class="alert py-2">
+                                {{ form.non_field_errors }}
+                            </div>
+                        {% endif %}
+
+                        <button type="submit" class="btn login-submit-btn">
+                            <i class="bi bi-box-arrow-in-right me-1"></i>
+                            Login
+                        </button>
+                    </form>
+
+                    <p class="text-center mt-4 mb-0 login-register-text">
+                        Belum punya akun?
+                        <a href="{% url 'register' %}">
+                            Daftar
+                        </a>
+                    </p>
+                </section>
             </div>
         </div>
     </div>

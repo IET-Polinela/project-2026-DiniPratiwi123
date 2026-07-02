@@ -3,37 +3,252 @@
 {% block title %}Detail Laporan{% endblock %}
 
 {% block content %}
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
-        <li class="breadcrumb-item"><a href="{% url 'report_list' %}">Reports</a></li>
-        <li class="breadcrumb-item active" aria-current="page">Detail Laporan</li>
-    </ol>
-</nav>
+<style>
+    .cute-detail-page {
+        color: #573845;
+    }
 
-<div class="card">
-    <div class="card-body">
-        <h1 class="card-title mb-3">Detail Laporan</h1>
+    .cute-detail-wrapper {
+        max-width: 920px;
+        margin: 0 auto;
+    }
 
-        <p><strong>Title:</strong> {{ report.title }}</p>
-        <p><strong>Category:</strong> {{ report.category }}</p>
-        <p><strong>Description:</strong> {{ report.description }}</p>
-        <p><strong>Location:</strong> {{ report.location }}</p>
-        <p>
-            <strong>Status:</strong>
-            {% if report.status == 'REPORTED' %}
-                <span class="badge bg-secondary">REPORTED</span>
-            {% elif report.status == 'VERIFIED' %}
-                <span class="badge bg-primary">VERIFIED</span>
-            {% elif report.status == 'IN_PROGRESS' %}
-                <span class="badge bg-warning text-dark">IN PROGRESS</span>
-            {% elif report.status == 'RESOLVED' %}
-                <span class="badge bg-success">RESOLVED</span>
-            {% endif %}
-        </p>
-        <p><strong>Created At:</strong> {{ report.created_at }}</p>
+    .cute-detail-card {
+        position: relative;
+        overflow: hidden;
+        padding: 34px;
+        border-radius: 32px;
+        background:
+            radial-gradient(circle at 88% 16%, rgba(255, 216, 107, 0.55), transparent 28%),
+            radial-gradient(circle at 12% 90%, rgba(255, 182, 206, 0.48), transparent 32%),
+            linear-gradient(135deg, #fff8df 0%, #fff0f7 55%, #fffaf0 100%);
+        border: 1px solid rgba(255, 182, 206, 0.5);
+        box-shadow: 0 18px 45px rgba(255, 127, 168, 0.16);
+    }
 
-        <a href="{% url 'report_list' %}" class="btn btn-secondary">Kembali</a>
+    .cute-detail-card::after {
+        content: "📋 🏘️ 🌷 💛";
+        position: absolute;
+        right: 28px;
+        bottom: 22px;
+        font-size: clamp(42px, 7vw, 78px);
+        letter-spacing: 8px;
+        opacity: 0.78;
+    }
+
+    .cute-badge-title {
+        position: relative;
+        z-index: 1;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 9px 16px;
+        margin-bottom: 16px;
+        border-radius: 999px;
+        color: #c74474;
+        background: rgba(255, 224, 235, 0.92);
+        font-weight: 900;
+    }
+
+    .cute-detail-card h1 {
+        position: relative;
+        z-index: 1;
+        margin-bottom: 22px;
+        color: #573845;
+        font-weight: 900;
+        letter-spacing: -0.8px;
+    }
+
+    .cute-info-box {
+        position: relative;
+        z-index: 1;
+        padding: 24px;
+        border-radius: 26px;
+        background: rgba(255, 255, 255, 0.82);
+        border: 1px solid rgba(255, 182, 206, 0.45);
+        box-shadow: 0 12px 28px rgba(255, 127, 168, 0.12);
+    }
+
+    .cute-detail-item {
+        padding: 16px 0;
+        border-bottom: 1px dashed rgba(255, 127, 168, 0.32);
+    }
+
+    .cute-detail-item:last-child {
+        border-bottom: none;
+    }
+
+    .cute-label {
+        display: block;
+        margin-bottom: 6px;
+        color: #c74474;
+        font-size: 14px;
+        font-weight: 900;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .cute-value {
+        color: #573845;
+        font-size: 17px;
+        font-weight: 700;
+        line-height: 1.7;
+    }
+
+    .cute-title-value {
+        font-size: 24px;
+        font-weight: 900;
+        letter-spacing: -0.4px;
+    }
+
+    .cute-status {
+        display: inline-flex;
+        align-items: center;
+        padding: 9px 14px;
+        border-radius: 999px;
+        font-weight: 900;
+    }
+
+    .badge.bg-secondary {
+        color: #7a6170 !important;
+        background: #f3e4eb !important;
+    }
+
+    .badge.bg-primary {
+        color: #ce3d70 !important;
+        background: #ffe0ea !important;
+    }
+
+    .badge.bg-warning {
+        color: #7a5a00 !important;
+        background: #fff0a8 !important;
+    }
+
+    .badge.bg-success {
+        color: #2f7344 !important;
+        background: #d8f8df !important;
+    }
+
+    .cute-actions {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 24px;
+    }
+
+    .cute-btn {
+        border-radius: 999px !important;
+        border: none !important;
+        padding: 11px 20px;
+        font-weight: 900;
+        transition: 0.2s ease;
+    }
+
+    .cute-btn:hover {
+        transform: translateY(-1px);
+    }
+
+    .cute-btn-secondary {
+        color: #73515e !important;
+        background: linear-gradient(135deg, #f3e4eb, #ffffff) !important;
+        border: 1px solid rgba(255, 182, 206, 0.45) !important;
+    }
+
+    @media (max-width: 768px) {
+        .cute-detail-card {
+            padding: 26px;
+        }
+
+        .cute-detail-card::after {
+            position: static;
+            display: block;
+            margin-top: 22px;
+            font-size: 44px;
+            letter-spacing: 4px;
+        }
+    }
+</style>
+
+<div class="cute-detail-page">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="{% url 'home' %}">Home</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="{% url 'report_list' %}">Reports</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">Detail Laporan</li>
+        </ol>
+    </nav>
+
+    <div class="cute-detail-wrapper">
+        <section class="cute-detail-card">
+            <span class="cute-badge-title">
+                ✨ Detail Laporan
+            </span>
+
+            <h1>Informasi Laporan LONG City 💗</h1>
+
+            <div class="cute-info-box">
+                <div class="cute-detail-item">
+                    <span class="cute-label">Title</span>
+                    <div class="cute-value cute-title-value">
+                        {{ report.title }}
+                    </div>
+                </div>
+
+                <div class="cute-detail-item">
+                    <span class="cute-label">Category</span>
+                    <div class="cute-value">
+                        🏷️ {{ report.category }}
+                    </div>
+                </div>
+
+                <div class="cute-detail-item">
+                    <span class="cute-label">Description</span>
+                    <div class="cute-value">
+                        {{ report.description }}
+                    </div>
+                </div>
+
+                <div class="cute-detail-item">
+                    <span class="cute-label">Location</span>
+                    <div class="cute-value">
+                        📍 {{ report.location }}
+                    </div>
+                </div>
+
+                <div class="cute-detail-item">
+                    <span class="cute-label">Status</span>
+
+                    {% if report.status == 'REPORTED' %}
+                        <span class="badge bg-secondary cute-status">REPORTED</span>
+                    {% elif report.status == 'VERIFIED' %}
+                        <span class="badge bg-primary cute-status">VERIFIED</span>
+                    {% elif report.status == 'IN_PROGRESS' %}
+                        <span class="badge bg-warning cute-status">IN PROGRESS</span>
+                    {% elif report.status == 'RESOLVED' %}
+                        <span class="badge bg-success cute-status">RESOLVED</span>
+                    {% endif %}
+                </div>
+
+                <div class="cute-detail-item">
+                    <span class="cute-label">Created At</span>
+                    <div class="cute-value">
+                        🕒 {{ report.created_at }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="cute-actions">
+                <a href="{% url 'report_list' %}" class="btn cute-btn cute-btn-secondary">
+                    Kembali
+                </a>
+            </div>
+        </section>
     </div>
 </div>
 {% endblock %}

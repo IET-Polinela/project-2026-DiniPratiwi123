@@ -1,45 +1,528 @@
 {% extends 'base.html' %}
 
+{% block title %}Dashboard Statistik{% endblock %}
+
 {% block content %}
-<div class="container mt-4">
-    <div class="p-4 mb-4 bg-primary text-white rounded-3">
-        <h2 class="mb-1">Dashboard Statistik LONG City</h2>
-        <p class="mb-0">Ringkasan visual laporan berdasarkan status dan kategori.</p>
+<style>
+    body {
+        background:
+            radial-gradient(circle at 12% 8%, rgba(255, 214, 120, 0.20), transparent 30%),
+            radial-gradient(circle at 88% 12%, rgba(255, 180, 205, 0.18), transparent 32%),
+            linear-gradient(135deg, #fffaf4 0%, #fff6f9 45%, #fffdf1 100%) !important;
+        color: #3f3037;
+    }
+
+    .navbar,
+    .navbar.bg-primary,
+    .navbar-dark,
+    .bg-primary {
+        background: rgba(255, 255, 255, 0.88) !important;
+        backdrop-filter: blur(16px);
+        border-bottom: 1px solid rgba(236, 185, 202, 0.42);
+        box-shadow: 0 10px 28px rgba(150, 95, 118, 0.09);
+    }
+
+    .navbar-brand {
+        color: #d85f8a !important;
+        font-weight: 900;
+    }
+
+    .navbar .nav-link {
+        color: #6f5964 !important;
+        font-weight: 750;
+        border-radius: 999px;
+        padding: 8px 14px !important;
+        margin: 0 2px;
+        transition: 0.2s ease;
+    }
+
+    .navbar .nav-link:hover {
+        color: #d85f8a !important;
+        background: #fff0f5;
+    }
+
+    .navbar .nav-link.dashboard-current {
+        color: #ffffff !important;
+        background: linear-gradient(135deg, #d85f8a, #f0a0bc);
+        box-shadow: 0 10px 24px rgba(216, 95, 138, 0.22);
+    }
+
+    .dashboard-page {
+        max-width: 1180px;
+        margin: 0 auto;
+    }
+
+    .dashboard-top {
+        display: grid;
+        grid-template-columns: 1.25fr 0.75fr;
+        gap: 22px;
+        margin-bottom: 22px;
+    }
+
+    .dashboard-main-hero {
+        position: relative;
+        overflow: hidden;
+        min-height: 260px;
+        padding: 34px;
+        border-radius: 30px;
+        background:
+            linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(255, 244, 248, 0.95)),
+            radial-gradient(circle at 90% 15%, rgba(255, 220, 125, 0.28), transparent 32%);
+        border: 1px solid rgba(236, 185, 202, 0.45);
+        box-shadow: 0 20px 50px rgba(150, 95, 118, 0.11);
+    }
+
+    .dashboard-main-hero::after {
+        content: "";
+        position: absolute;
+        width: 170px;
+        height: 170px;
+        right: -60px;
+        top: -60px;
+        border-radius: 50%;
+        background: rgba(255, 214, 120, 0.30);
+    }
+
+    .dashboard-main-hero::before {
+        content: "";
+        position: absolute;
+        width: 140px;
+        height: 140px;
+        right: 70px;
+        bottom: -70px;
+        border-radius: 50%;
+        background: rgba(216, 95, 138, 0.12);
+    }
+
+    .dashboard-label {
+        position: relative;
+        z-index: 2;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 9px 15px;
+        margin-bottom: 18px;
+        border-radius: 999px;
+        color: #c85c82;
+        background: #ffffff;
+        border: 1px solid rgba(236, 185, 202, 0.48);
+        font-weight: 850;
+        font-size: 14px;
+    }
+
+    .dashboard-main-hero h1 {
+        position: relative;
+        z-index: 2;
+        max-width: 620px;
+        margin-bottom: 14px;
+        color: #3f3037;
+        font-size: clamp(34px, 4vw, 54px);
+        line-height: 1.06;
+        font-weight: 950;
+        letter-spacing: -1.3px;
+    }
+
+    .dashboard-main-hero h1 span {
+        color: #d85f8a;
+    }
+
+    .dashboard-main-hero p {
+        position: relative;
+        z-index: 2;
+        max-width: 660px;
+        margin-bottom: 0;
+        color: #75616a;
+        font-weight: 620;
+        line-height: 1.8;
+    }
+
+    .mini-analytics-card {
+        position: relative;
+        overflow: hidden;
+        min-height: 260px;
+        padding: 26px;
+        border-radius: 30px;
+        background:
+            radial-gradient(circle at top right, rgba(255, 214, 120, 0.34), transparent 32%),
+            linear-gradient(135deg, #fff8e8 0%, #fff1f6 100%);
+        border: 1px solid rgba(236, 185, 202, 0.45);
+        box-shadow: 0 20px 50px rgba(150, 95, 118, 0.10);
+    }
+
+    .mini-analytics-card h3 {
+        color: #3f3037;
+        font-size: 18px;
+        font-weight: 950;
+        margin-bottom: 18px;
+    }
+
+    .mini-bars {
+        height: 120px;
+        display: flex;
+        align-items: end;
+        gap: 12px;
+        padding: 10px 0 0;
+    }
+
+    .mini-bar {
+        flex: 1;
+        border-radius: 999px 999px 12px 12px;
+        background: linear-gradient(180deg, #f0a0bc, #ffe3ed);
+    }
+
+    .mini-bar:nth-child(1) {
+        height: 48%;
+    }
+
+    .mini-bar:nth-child(2) {
+        height: 78%;
+        background: linear-gradient(180deg, #ffdc7d, #fff3bd);
+    }
+
+    .mini-bar:nth-child(3) {
+        height: 60%;
+        background: linear-gradient(180deg, #a9dcf5, #e8f8ff);
+    }
+
+    .mini-bar:nth-child(4) {
+        height: 88%;
+        background: linear-gradient(180deg, #a8e6b3, #e8ffe9);
+    }
+
+    .mini-note {
+        margin-top: 20px;
+        padding: 13px 14px;
+        border-radius: 18px;
+        background: rgba(255, 255, 255, 0.72);
+        border: 1px solid rgba(236, 185, 202, 0.34);
+        color: #75616a;
+        font-size: 14px;
+        font-weight: 650;
+        line-height: 1.6;
+    }
+
+    .stats-row {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 18px;
+        margin-bottom: 22px;
+    }
+
+    .stat-card {
+        position: relative;
+        overflow: hidden;
+        padding: 22px;
+        border-radius: 24px;
+        background: rgba(255, 255, 255, 0.90);
+        border: 1px solid rgba(236, 185, 202, 0.42);
+        box-shadow: 0 16px 38px rgba(150, 95, 118, 0.09);
+    }
+
+    .stat-card::before {
+        content: "";
+        position: absolute;
+        inset: 0 0 auto 0;
+        height: 5px;
+        background: linear-gradient(90deg, #d85f8a, #ffdc7d);
+    }
+
+    .stat-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 18px;
+    }
+
+    .stat-icon {
+        width: 48px;
+        height: 48px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 18px;
+        background: linear-gradient(135deg, #ffe3ec, #fff2c3);
+        color: #d85f8a;
+        font-size: 22px;
+    }
+
+    .stat-love {
+        color: rgba(216, 95, 138, 0.35);
+        font-size: 20px;
+    }
+
+    .stat-card small {
+        display: block;
+        margin-bottom: 4px;
+        color: #75616a;
+        font-weight: 750;
+    }
+
+    .stat-card h3 {
+        margin-bottom: 0;
+        color: #3f3037;
+        font-size: 32px;
+        font-weight: 950;
+    }
+
+    .dashboard-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 22px;
+        margin-bottom: 22px;
+    }
+
+    .dashboard-panel {
+        overflow: hidden;
+        border-radius: 26px;
+        background: rgba(255, 255, 255, 0.92);
+        border: 1px solid rgba(236, 185, 202, 0.42);
+        box-shadow: 0 16px 42px rgba(150, 95, 118, 0.09);
+    }
+
+    .panel-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 18px 22px;
+        border-bottom: 1px solid rgba(236, 185, 202, 0.34);
+        background: #fff7fa;
+    }
+
+    .panel-header h3 {
+        margin-bottom: 0;
+        color: #3f3037;
+        font-size: 16px;
+        font-weight: 950;
+    }
+
+    .panel-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 7px 11px;
+        border-radius: 999px;
+        background: #ffffff;
+        color: #c85c82;
+        border: 1px solid rgba(236, 185, 202, 0.42);
+        font-size: 12px;
+        font-weight: 850;
+    }
+
+    .panel-body {
+        padding: 22px;
+    }
+
+    .chart-wrap {
+        position: relative;
+        height: 285px;
+    }
+
+    .table-panel {
+        margin-top: 0;
+    }
+
+    .table {
+        margin-bottom: 0;
+        border-color: rgba(236, 185, 202, 0.32) !important;
+    }
+
+    .table thead th {
+        padding: 14px 15px;
+        color: #3f3037;
+        background: #fff7fa;
+        border-color: rgba(236, 185, 202, 0.32);
+        font-weight: 900;
+    }
+
+    .table tbody td {
+        padding: 14px 15px;
+        color: #5f4b55;
+        background: rgba(255, 255, 255, 0.86);
+        border-color: rgba(236, 185, 202, 0.26);
+        vertical-align: middle;
+        font-weight: 600;
+    }
+
+    .table tbody tr:hover td {
+        background: #fff9ea;
+    }
+
+    .category-badge {
+        display: inline-flex;
+        padding: 7px 11px;
+        border-radius: 999px;
+        color: #c85c82;
+        background: #fff0f5;
+        font-size: 13px;
+        font-weight: 850;
+    }
+
+    .empty-cell {
+        padding: 28px !important;
+        color: #8a737d !important;
+        background: #fffafb !important;
+        font-weight: 850 !important;
+    }
+
+    @media (max-width: 992px) {
+        .dashboard-top,
+        .dashboard-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .stats-row {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media (max-width: 576px) {
+        .dashboard-main-hero,
+        .mini-analytics-card {
+            padding: 26px;
+            border-radius: 24px;
+        }
+
+        .stats-row {
+            grid-template-columns: 1fr;
+        }
+
+        .chart-wrap {
+            height: 250px;
+        }
+    }
+</style>
+
+<div class="dashboard-page">
+    <div class="dashboard-top">
+        <section class="dashboard-main-hero">
+            <span class="dashboard-label">
+                <i class="bi bi-graph-up-arrow"></i>
+                Admin Dashboard
+            </span>
+
+            <h1>
+                Pusat Statistik <span>LONG City</span>
+            </h1>
+
+            <p>
+                Pantau laporan warga berdasarkan status, kategori, dan aktivitas terbaru
+                dalam satu tampilan dashboard yang ringkas dan mudah dibaca.
+            </p>
+        </section>
+
+        <aside class="mini-analytics-card">
+            <h3>
+                <i class="bi bi-ribbon me-1"></i>
+                Ringkasan Visual
+            </h3>
+
+            <div class="mini-bars">
+                <div class="mini-bar"></div>
+                <div class="mini-bar"></div>
+                <div class="mini-bar"></div>
+                <div class="mini-bar"></div>
+            </div>
+
+            <div class="mini-note">
+                Data pada grafik akan mengikuti laporan yang masuk ke sistem.
+            </div>
+        </aside>
     </div>
 
-    <div class="row g-4">
-        <div class="col-md-6">
-            <div class="card shadow-sm">
-                <div class="card-header fw-bold">
-                    Distribusi Status Laporan
+    <div class="stats-row">
+        <div class="stat-card">
+            <div class="stat-top">
+                <div class="stat-icon">
+                    <i class="bi bi-send"></i>
                 </div>
-                <div class="card-body">
+                <i class="bi bi-heart-fill stat-love"></i>
+            </div>
+            <small>Dilaporkan</small>
+            <h3 id="reportedTotal">0</h3>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-top">
+                <div class="stat-icon">
+                    <i class="bi bi-patch-check"></i>
+                </div>
+                <i class="bi bi-heart-fill stat-love"></i>
+            </div>
+            <small>Diverifikasi</small>
+            <h3 id="verifiedTotal">0</h3>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-top">
+                <div class="stat-icon">
+                    <i class="bi bi-gear"></i>
+                </div>
+                <i class="bi bi-heart-fill stat-love"></i>
+            </div>
+            <small>Diproses</small>
+            <h3 id="progressTotal">0</h3>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-top">
+                <div class="stat-icon">
+                    <i class="bi bi-check-circle"></i>
+                </div>
+                <i class="bi bi-heart-fill stat-love"></i>
+            </div>
+            <small>Selesai</small>
+            <h3 id="resolvedTotal">0</h3>
+        </div>
+    </div>
+
+    <div class="dashboard-grid">
+        <section class="dashboard-panel">
+            <div class="panel-header">
+                <h3>Distribusi Status Laporan</h3>
+                <span class="panel-chip">
+                    <i class="bi bi-pie-chart"></i>
+                    Status
+                </span>
+            </div>
+
+            <div class="panel-body">
+                <div class="chart-wrap">
                     <canvas id="statusChart"></canvas>
                 </div>
             </div>
-        </div>
+        </section>
 
-        <div class="col-md-6">
-            <div class="card shadow-sm">
-                <div class="card-header fw-bold">
-                    Distribusi Kategori Laporan
-                </div>
-                <div class="card-body">
+        <section class="dashboard-panel">
+            <div class="panel-header">
+                <h3>Distribusi Kategori Laporan</h3>
+                <span class="panel-chip">
+                    <i class="bi bi-bar-chart"></i>
+                    Kategori
+                </span>
+            </div>
+
+            <div class="panel-body">
+                <div class="chart-wrap">
                     <canvas id="categoryChart"></canvas>
                 </div>
             </div>
-        </div>
+        </section>
     </div>
 
-    <div class="row g-4 mt-2">
-        <div class="col-md-6">
-            <div class="card shadow-sm">
-                <div class="card-header fw-bold">
-                    5 Laporan Terakhir Dilaporkan
-                </div>
-                <div class="card-body">
-                    <table class="table table-sm table-bordered">
-                        <thead class="table-dark">
+    <div class="dashboard-grid table-panel">
+        <section class="dashboard-panel">
+            <div class="panel-header">
+                <h3>5 Laporan Terakhir Dilaporkan</h3>
+                <span class="panel-chip">
+                    <i class="bi bi-clock-history"></i>
+                    Terbaru
+                </span>
+            </div>
+
+            <div class="panel-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered align-middle">
+                        <thead>
                             <tr>
                                 <th>Judul</th>
                                 <th>Kategori</th>
@@ -50,16 +533,21 @@
                     </table>
                 </div>
             </div>
-        </div>
+        </section>
 
-        <div class="col-md-6">
-            <div class="card shadow-sm">
-                <div class="card-header fw-bold">
-                    5 Laporan Terakhir Selesai
-                </div>
-                <div class="card-body">
-                    <table class="table table-sm table-bordered">
-                        <thead class="table-dark">
+        <section class="dashboard-panel">
+            <div class="panel-header">
+                <h3>5 Laporan Terakhir Selesai</h3>
+                <span class="panel-chip">
+                    <i class="bi bi-check2-circle"></i>
+                    Selesai
+                </span>
+            </div>
+
+            <div class="panel-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered align-middle">
+                        <thead>
                             <tr>
                                 <th>Judul</th>
                                 <th>Kategori</th>
@@ -70,7 +558,7 @@
                     </table>
                 </div>
             </div>
-        </div>
+        </section>
     </div>
 </div>
 
@@ -78,10 +566,21 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
+    const navLinks = document.querySelectorAll('.navbar .nav-link');
+
+    navLinks.forEach(function (link) {
+        link.classList.remove('home-current', 'report-current', 'dashboard-current', 'about-current', 'contact-current');
+
+        if (link.textContent.trim().toLowerCase() === 'dashboard') {
+            link.classList.add('dashboard-current');
+            link.setAttribute('aria-current', 'page');
+        }
+    });
+
     fetch("{% url 'dashboard_stats_api' %}")
         .then(response => response.json())
         .then(data => {
-            console.log('Data JSON Dashboard:', data);
+            updateSummaryCards(data.status_distribution);
 
             const statusLabels = data.status_distribution.map(item => item.label);
             const statusTotals = data.status_distribution.map(item => item.total);
@@ -91,8 +590,35 @@ document.addEventListener('DOMContentLoaded', function () {
                 data: {
                     labels: statusLabels,
                     datasets: [{
-                        data: statusTotals
+                        data: statusTotals,
+                        backgroundColor: [
+                            '#f3e4eb',
+                            '#f0a0bc',
+                            '#ffdc7d',
+                            '#a9dcf5',
+                            '#a8e6b3'
+                        ],
+                        borderColor: '#ffffff',
+                        borderWidth: 4,
+                        hoverOffset: 8
                     }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '62%',
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: '#6f5964',
+                                font: {
+                                    weight: 'bold'
+                                },
+                                padding: 16
+                            }
+                        }
+                    }
                 }
             });
 
@@ -105,13 +631,50 @@ document.addEventListener('DOMContentLoaded', function () {
                     labels: categoryLabels,
                     datasets: [{
                         label: 'Jumlah Laporan',
-                        data: categoryTotals
+                        data: categoryTotals,
+                        backgroundColor: '#a9dcf5',
+                        borderColor: '#7fc8ec',
+                        borderWidth: 2,
+                        borderRadius: 14
                     }]
                 },
                 options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: '#6f5964',
+                                font: {
+                                    weight: 'bold'
+                                }
+                            }
+                        }
+                    },
                     scales: {
+                        x: {
+                            ticks: {
+                                color: '#7b6570',
+                                font: {
+                                    weight: 'bold'
+                                }
+                            },
+                            grid: {
+                                display: false
+                            }
+                        },
                         y: {
-                            beginAtZero: true
+                            beginAtZero: true,
+                            ticks: {
+                                color: '#7b6570',
+                                font: {
+                                    weight: 'bold'
+                                },
+                                precision: 0
+                            },
+                            grid: {
+                                color: 'rgba(216, 95, 138, 0.10)'
+                            }
                         }
                     }
                 }
@@ -124,6 +687,19 @@ document.addEventListener('DOMContentLoaded', function () {
             console.error('Gagal mengambil data dashboard:', error);
         });
 
+    function updateSummaryCards(statusDistribution) {
+        const totalMap = {};
+
+        statusDistribution.forEach(item => {
+            totalMap[item.status] = item.total;
+        });
+
+        document.getElementById('reportedTotal').textContent = totalMap.REPORTED || 0;
+        document.getElementById('verifiedTotal').textContent = totalMap.VERIFIED || 0;
+        document.getElementById('progressTotal').textContent = totalMap.IN_PROGRESS || 0;
+        document.getElementById('resolvedTotal').textContent = totalMap.RESOLVED || 0;
+    }
+
     function renderTable(tableId, reports) {
         const tableBody = document.getElementById(tableId);
         tableBody.innerHTML = '';
@@ -131,7 +707,9 @@ document.addEventListener('DOMContentLoaded', function () {
         if (reports.length === 0) {
             tableBody.innerHTML = `
                 <tr>
-                    <td colspan="3" class="text-center text-muted">Tidak ada data</td>
+                    <td colspan="3" class="text-center empty-cell">
+                        Tidak ada data
+                    </td>
                 </tr>
             `;
             return;
@@ -140,12 +718,21 @@ document.addEventListener('DOMContentLoaded', function () {
         reports.forEach(report => {
             tableBody.innerHTML += `
                 <tr>
-                    <td>${report.title}</td>
-                    <td>${report.category}</td>
-                    <td>${report.location}</td>
+                    <td><strong>${escapeHTML(report.title)}</strong></td>
+                    <td><span class="category-badge">${escapeHTML(report.category)}</span></td>
+                    <td>${escapeHTML(report.location)}</td>
                 </tr>
             `;
         });
+    }
+
+    function escapeHTML(value) {
+        return String(value ?? '')
+            .replaceAll('&', '&amp;')
+            .replaceAll('<', '&lt;')
+            .replaceAll('>', '&gt;')
+            .replaceAll('"', '&quot;')
+            .replaceAll("'", '&#039;');
     }
 });
 </script>

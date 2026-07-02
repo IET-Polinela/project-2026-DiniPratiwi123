@@ -38,6 +38,12 @@ class ReportSerializer(serializers.ModelSerializer):
         if not request or not request.user or not request.user.is_authenticated:
             return 'Warga Anonim'
 
+        # Pada Feed Kota, semua identitas pelapor wajib disamarkan,
+        # termasuk laporan milik user yang sedang login.
+        if request.query_params.get('tab') == 'feed':
+            return 'Warga Anonim'
+
+        # Pada tab my_reports/detail milik sendiri, nama asli boleh tampil.
         if obj.reporter_id == request.user.id:
             return obj.reporter.username
 

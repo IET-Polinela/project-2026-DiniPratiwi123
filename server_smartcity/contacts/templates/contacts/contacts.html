@@ -3,46 +3,480 @@
 {% block title %}Contact{% endblock %}
 
 {% block content %}
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
-        <li class="breadcrumb-item active" aria-current="page">Contact</li>
-    </ol>
-</nav>
+<style>
+    body {
+        background:
+            radial-gradient(circle at 12% 12%, rgba(255, 216, 107, 0.28), transparent 28%),
+            radial-gradient(circle at 88% 14%, rgba(255, 166, 196, 0.26), transparent 30%),
+            linear-gradient(135deg, #fffaf0 0%, #fff3f8 48%, #fff9df 100%) !important;
+        color: #4d3340;
+    }
 
-<div class="hero-box">
-    <h2>Contact</h2>
-    <p class="mb-0">
-        Hubungi kami jika terdapat pertanyaan atau kendala terkait penggunaan aplikasi.
-    </p>
-</div>
+    .navbar,
+    .navbar.bg-primary,
+    .navbar-dark,
+    .bg-primary {
+        background: rgba(255, 255, 255, 0.84) !important;
+        backdrop-filter: blur(18px);
+        border-bottom: 1px solid rgba(255, 182, 206, 0.45);
+        box-shadow: 0 12px 35px rgba(255, 127, 168, 0.12);
+    }
 
-<div class="row g-4">
-    <div class="col-md-4">
-        <div class="card info-card h-100">
-            <div class="card-body">
-                <h5>Email</h5>
-                <p class="mb-0">dinipratiwi@gmail.com</p>
+    .navbar-brand {
+        color: #ff6f9e !important;
+        font-weight: 900;
+        letter-spacing: -0.4px;
+    }
+
+    .navbar-brand::before {
+        content: "💗";
+        margin-right: 8px;
+    }
+
+    .navbar .nav-link {
+        color: #6b4a58 !important;
+        font-weight: 800;
+        border-radius: 999px;
+        padding: 8px 14px !important;
+        margin: 0 2px;
+        transition: 0.2s ease;
+    }
+
+    .navbar .nav-link:hover {
+        color: #ff5f94 !important;
+        background: #ffe5ef;
+    }
+
+    .contact-page {
+        max-width: 1180px;
+        margin: 0 auto;
+    }
+
+    .breadcrumb {
+        padding: 12px 18px;
+        margin-bottom: 22px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.75);
+        border: 1px solid rgba(255, 182, 206, 0.42);
+        box-shadow: 0 12px 30px rgba(255, 127, 168, 0.10);
+    }
+
+    .breadcrumb-item a {
+        color: #ff6f9e;
+        font-weight: 900;
+        text-decoration: none;
+    }
+
+    .breadcrumb-item.active {
+        color: #7b5d69;
+        font-weight: 800;
+    }
+
+    .contact-hero {
+        position: relative;
+        overflow: hidden;
+        padding: 48px;
+        margin-bottom: 28px;
+        border-radius: 42px;
+        background:
+            radial-gradient(circle at 82% 20%, rgba(255, 225, 142, 0.72), transparent 26%),
+            radial-gradient(circle at 14% 88%, rgba(255, 182, 206, 0.55), transparent 30%),
+            linear-gradient(135deg, rgba(255, 255, 255, 0.92), rgba(255, 241, 247, 0.94), rgba(255, 249, 225, 0.96));
+        border: 1px solid rgba(255, 182, 206, 0.55);
+        box-shadow: 0 26px 70px rgba(255, 127, 168, 0.18);
+    }
+
+    .contact-hero::before {
+        content: "";
+        position: absolute;
+        inset: 18px;
+        border-radius: 34px;
+        border: 1px dashed rgba(255, 143, 177, 0.34);
+        pointer-events: none;
+    }
+
+    .contact-hero-content {
+        position: relative;
+        z-index: 2;
+        max-width: 620px;
+    }
+
+    .contact-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 18px;
+        margin-bottom: 18px;
+        border-radius: 999px;
+        color: #d7477a;
+        background: linear-gradient(135deg, #ffe3ee, #fff3c9);
+        border: 1px solid rgba(255, 143, 177, 0.35);
+        font-weight: 900;
+        box-shadow: 0 12px 24px rgba(255, 127, 168, 0.14);
+    }
+
+    .contact-hero h1 {
+        margin-bottom: 18px;
+        color: #4d3340;
+        font-size: clamp(38px, 5vw, 64px);
+        font-weight: 950;
+        line-height: 1.06;
+        letter-spacing: -1.8px;
+    }
+
+    .contact-hero p {
+        max-width: 590px;
+        color: #7b5d69;
+        font-size: 18px;
+        font-weight: 650;
+        line-height: 1.8;
+    }
+
+    .contact-visual {
+        position: absolute;
+        right: 46px;
+        bottom: 44px;
+        width: 330px;
+        height: 250px;
+        z-index: 1;
+    }
+
+    .mail-card {
+        position: absolute;
+        left: 40px;
+        top: 44px;
+        width: 250px;
+        height: 160px;
+        border-radius: 28px;
+        background: linear-gradient(135deg, #ffffff, #fff2f7);
+        border: 1px solid rgba(255, 182, 206, 0.52);
+        box-shadow: 0 24px 50px rgba(255, 127, 168, 0.18);
+        transform: rotate(-4deg);
+    }
+
+    .mail-card::before {
+        content: "";
+        position: absolute;
+        inset: 20px;
+        border-radius: 20px;
+        background:
+            linear-gradient(135deg, transparent 49%, rgba(255, 127, 168, 0.22) 50%, transparent 51%),
+            linear-gradient(45deg, transparent 49%, rgba(255, 216, 107, 0.25) 50%, transparent 51%);
+        border: 1px dashed rgba(255, 143, 177, 0.26);
+    }
+
+    .mail-heart {
+        position: absolute;
+        right: 28px;
+        top: 26px;
+        width: 54px;
+        height: 54px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 22px;
+        background: linear-gradient(135deg, #ffe1ec, #fff2bd);
+        box-shadow: 0 14px 30px rgba(255, 127, 168, 0.20);
+        font-size: 26px;
+        animation: floatContact 3s ease-in-out infinite;
+    }
+
+    .mini-building {
+        position: absolute;
+        bottom: 0;
+        border-radius: 18px 18px 10px 10px;
+        border: 4px solid rgba(255, 255, 255, 0.7);
+        box-shadow: 0 16px 30px rgba(137, 83, 102, 0.13);
+    }
+
+    .mini-building.one {
+        left: 16px;
+        width: 72px;
+        height: 96px;
+        background: linear-gradient(180deg, #ff9fbd, #ffd0df);
+    }
+
+    .mini-building.two {
+        right: 8px;
+        width: 78px;
+        height: 112px;
+        background: linear-gradient(180deg, #ffe08a, #fff1be);
+    }
+
+    .mini-building::before,
+    .mini-building::after {
+        content: "";
+        position: absolute;
+        top: 20px;
+        width: 12px;
+        height: 14px;
+        border-radius: 5px;
+        background: rgba(255, 255, 255, 0.78);
+    }
+
+    .mini-building::before {
+        left: 16px;
+    }
+
+    .mini-building::after {
+        right: 16px;
+    }
+
+    .contact-cloud {
+        position: absolute;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.86);
+        box-shadow: 0 14px 30px rgba(255, 182, 206, 0.18);
+    }
+
+    .contact-cloud.one {
+        width: 110px;
+        height: 42px;
+        top: 0;
+        left: 0;
+    }
+
+    .contact-cloud.two {
+        width: 120px;
+        height: 44px;
+        top: 22px;
+        right: 8px;
+    }
+
+    @keyframes floatContact {
+        0%, 100% {
+            transform: translateY(0);
+        }
+        50% {
+            transform: translateY(-10px);
+        }
+    }
+
+    .contact-main-grid {
+        margin-top: 30px;
+    }
+
+    .contact-info-card {
+        height: 100%;
+        padding: 30px;
+        border-radius: 32px;
+        background: rgba(255, 255, 255, 0.86);
+        border: 1px solid rgba(255, 182, 206, 0.45);
+        box-shadow: 0 18px 42px rgba(255, 127, 168, 0.13);
+        transition: 0.22s ease;
+    }
+
+    .contact-info-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 24px 55px rgba(255, 127, 168, 0.20);
+    }
+
+    .contact-icon {
+        width: 66px;
+        height: 66px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 20px;
+        border-radius: 24px;
+        background: linear-gradient(135deg, #ffe1ec, #fff2bd);
+        color: #ff6f9e;
+        font-size: 30px;
+        box-shadow: 0 12px 25px rgba(255, 127, 168, 0.14);
+    }
+
+    .contact-info-card h3 {
+        margin-bottom: 10px;
+        color: #4d3340;
+        font-weight: 950;
+        letter-spacing: -0.5px;
+    }
+
+    .contact-info-card p {
+        margin-bottom: 0;
+        color: #7b5d69;
+        font-size: 16px;
+        font-weight: 700;
+        line-height: 1.75;
+    }
+
+    .contact-feature-card {
+        height: 100%;
+        padding: 34px;
+        border-radius: 34px;
+        background:
+            radial-gradient(circle at 86% 18%, rgba(255, 216, 107, 0.30), transparent 30%),
+            linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(255, 241, 247, 0.9));
+        border: 1px solid rgba(255, 182, 206, 0.45);
+        box-shadow: 0 18px 42px rgba(255, 127, 168, 0.13);
+    }
+
+    .contact-feature-card h2 {
+        color: #4d3340;
+        font-weight: 950;
+        letter-spacing: -0.8px;
+    }
+
+    .contact-feature-card p {
+        color: #7b5d69;
+        font-weight: 650;
+        line-height: 1.8;
+    }
+
+    .contact-mini-note {
+        display: flex;
+        gap: 14px;
+        align-items: flex-start;
+        margin-top: 22px;
+        padding: 18px;
+        border-radius: 24px;
+        background: rgba(255, 255, 255, 0.78);
+        border: 1px solid rgba(255, 182, 206, 0.38);
+        color: #684756;
+        font-weight: 750;
+        line-height: 1.7;
+    }
+
+    .contact-mini-note span {
+        font-size: 28px;
+        line-height: 1;
+    }
+
+    @media (max-width: 992px) {
+        .contact-hero {
+            padding: 34px;
+        }
+
+        .contact-visual {
+            position: relative;
+            right: auto;
+            bottom: auto;
+            width: 100%;
+            max-width: 330px;
+            margin-top: 34px;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .contact-hero {
+            padding: 26px;
+            border-radius: 30px;
+        }
+
+        .contact-visual {
+            transform: scale(0.88);
+            transform-origin: left top;
+            margin-bottom: -20px;
+        }
+    }
+</style>
+
+<div class="contact-page">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="{% url 'home' %}">Home</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">Contact</li>
+        </ol>
+    </nav>
+
+    <section class="contact-hero">
+        <div class="contact-hero-content">
+            <span class="contact-pill">
+                ✨ Contact
+            </span>
+
+            <h1>
+                Hubungi tim LONG City 💌
+            </h1>
+
+            <p class="mb-0">
+                Hubungi kami jika terdapat pertanyaan atau kendala terkait penggunaan aplikasi.
+            </p>
+        </div>
+
+        <div class="contact-visual">
+            <div class="contact-cloud one"></div>
+            <div class="contact-cloud two"></div>
+
+            <div class="mail-card">
+                <div class="mail-heart">💗</div>
+            </div>
+
+            <div class="mini-building one"></div>
+            <div class="mini-building two"></div>
+        </div>
+    </section>
+
+    <div class="row g-4 contact-main-grid">
+        <div class="col-lg-4">
+            <div class="contact-info-card">
+                <div class="contact-icon">
+                    <i class="bi bi-envelope-heart"></i>
+                </div>
+
+                <h3>Email</h3>
+
+                <p>
+                    dinipratiwi@gmail.com
+                </p>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="contact-info-card">
+                <div class="contact-icon">
+                    <i class="bi bi-clock-heart"></i>
+                </div>
+
+                <h3>Layanan</h3>
+
+                <p>
+                    Senin - Jumat, 08.00 - 16.00 WIB
+                </p>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="contact-info-card">
+                <div class="contact-icon">
+                    <i class="bi bi-buildings"></i>
+                </div>
+
+                <h3>Alamat</h3>
+
+                <p>
+                    Kantor Pelayanan Kota LONG City
+                </p>
             </div>
         </div>
     </div>
 
-    <div class="col-md-4">
-        <div class="card info-card h-100">
-            <div class="card-body">
-                <h5>Layanan</h5>
-                <p class="mb-0">Senin - Jumat, 08.00 - 16.00 WIB</p>
-            </div>
-        </div>
-    </div>
+    <section class="contact-feature-card mt-4">
+        <div class="row align-items-center g-4">
+            <div class="col-lg-7">
+                <h2 class="mb-3">
+                    Kami siap membantu warga LONG City 🌷
+                </h2>
 
-    <div class="col-md-4">
-        <div class="card info-card h-100">
-            <div class="card-body">
-                <h5>Alamat</h5>
-                <p class="mb-0">Kantor Pelayanan Kota LONG City</p>
+                <p class="mb-0">
+                    Sampaikan pertanyaan, kendala penggunaan aplikasi, atau informasi lain
+                    yang berkaitan dengan layanan pelaporan kota. Setiap masukan dari warga
+                    membantu sistem ini menjadi lebih baik.
+                </p>
+            </div>
+
+            <div class="col-lg-5">
+                <div class="contact-mini-note">
+                    <span>💛</span>
+                    <div>
+                        Pesan dan pertanyaan akan lebih mudah ditindaklanjuti jika disampaikan
+                        dengan jelas, singkat, dan menyertakan informasi yang diperlukan.
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
+    </section>
 </div>
 {% endblock %}

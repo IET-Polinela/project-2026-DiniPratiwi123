@@ -1,5 +1,6 @@
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.exceptions import PermissionDenied
 from django.db.models import Q
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
@@ -27,6 +28,34 @@ class AdminRequiredMixin(LoginRequiredMixin):
         return super().dispatch(request, *args, **kwargs)
 
 
+class AdminCannotEditDeleteReportMixin(AdminRequiredMixin):
+    """
+    Mixin khusus agar konsep sesuai test dosen:
+    admin boleh mengelola workflow status, tetapi tidak boleh edit/delete isi laporan.
+    """
+
+    forbidden_message = 'Admin tidak diizinkan mengedit atau menghapus laporan.'
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return self.handle_no_permission()
+
+        if not request.user.is_admin and not request.user.is_superuser:
+            messages.error(request, 'Akses Ditolak')
+            return redirect('report_list')
+
+        raise PermissionDenied(self.forbidden_message)
+
+    def get(self, request, *args, **kwargs):
+        raise PermissionDenied(self.forbidden_message)
+
+    def post(self, request, *args, **kwargs):
+        raise PermissionDenied(self.forbidden_message)
+
+    def delete(self, request, *args, **kwargs):
+        raise PermissionDenied(self.forbidden_message)
+
+
 class ReportListView(ListView):
     model = Report
     template_name = 'main_app/home.html'
@@ -51,27 +80,18 @@ class ReportCreateView(AdminRequiredMixin, CreateView):
         return response
 
 
-class ReportUpdateView(AdminRequiredMixin, UpdateView):
+class ReportUpdateView(AdminCannotEditDeleteReportMixin, UpdateView):
     model = Report
     form_class = ReportForm
     template_name = 'main_app/edit_report.html'
     success_url = reverse_lazy('report_list')
 
-    def form_valid(self, form):
-        response = super().form_valid(form)
-        messages.success(self.request, 'Laporan berhasil diperbarui.')
-        return response
 
-
-class ReportDeleteView(AdminRequiredMixin, DeleteView):
+class ReportDeleteView(AdminCannotEditDeleteReportMixin, DeleteView):
     model = Report
     template_name = 'main_app/delete_report.html'
     success_url = reverse_lazy('report_list')
     context_object_name = 'report'
-
-    def form_valid(self, form):
-        messages.success(self.request, 'Laporan berhasil dihapus.')
-        return super().form_valid(form)
 
 
 class ReportUpdateStatusView(AdminRequiredMixin, View):

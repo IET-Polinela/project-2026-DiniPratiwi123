@@ -3,67 +3,571 @@
 {% block title %}Registrasi Citizen{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-6">
-        <div class="card shadow-sm border-0 rounded-4">
-            <div class="card-body p-4">
-                <h2 class="text-center mb-4 fw-bold">Registrasi Citizen</h2>
+<style>
+    body {
+        background:
+            radial-gradient(circle at 12% 12%, rgba(255, 216, 107, 0.32), transparent 28%),
+            radial-gradient(circle at 88% 16%, rgba(255, 166, 196, 0.30), transparent 30%),
+            linear-gradient(135deg, #fffaf0 0%, #fff3f8 48%, #fff9df 100%) !important;
+        color: #4d3340;
+    }
 
-                <form method="post" novalidate>
-                    {% csrf_token %}
+    .navbar,
+    .navbar.bg-primary,
+    .navbar-dark,
+    .bg-primary {
+        background: rgba(255, 255, 255, 0.84) !important;
+        backdrop-filter: blur(18px);
+        border-bottom: 1px solid rgba(255, 182, 206, 0.45);
+        box-shadow: 0 12px 35px rgba(255, 127, 168, 0.12);
+    }
 
-                    <div class="mb-3">
-                        <label for="{{ form.username.id_for_label }}" class="form-label">Nama pengguna</label>
-                        {{ form.username }}
-                        {% if form.username.errors %}
-                            <div class="text-danger small mt-1">
-                                {{ form.username.errors }}
-                            </div>
-                        {% endif %}
-                    </div>
+    .navbar-brand {
+        color: #ff6f9e !important;
+        font-weight: 900;
+        letter-spacing: -0.4px;
+    }
 
-                    <div class="mb-3">
-                        <label for="{{ form.email.id_for_label }}" class="form-label">Alamat email</label>
-                        {{ form.email }}
-                        {% if form.email.errors %}
-                            <div class="text-danger small mt-1">
-                                {{ form.email.errors }}
-                            </div>
-                        {% endif %}
-                    </div>
+    .navbar-brand::before {
+        content: "💗";
+        margin-right: 8px;
+    }
 
-                    <div class="mb-3">
-                        <label for="{{ form.password1.id_for_label }}" class="form-label">Sandi</label>
-                        {{ form.password1 }}
-                        {% if form.password1.errors %}
-                            <div class="text-danger small mt-1">
-                                {{ form.password1.errors }}
-                            </div>
-                        {% endif %}
-                    </div>
+    .navbar .nav-link {
+        color: #6b4a58 !important;
+        font-weight: 800;
+        border-radius: 999px;
+        padding: 8px 14px !important;
+        margin: 0 2px;
+        transition: 0.2s ease;
+    }
 
-                    <div class="mb-4">
-                        <label for="{{ form.password2.id_for_label }}" class="form-label">Konfirmasi sandi</label>
-                        {{ form.password2 }}
-                        {% if form.password2.errors %}
-                            <div class="text-danger small mt-1">
-                                {{ form.password2.errors }}
-                            </div>
-                        {% endif %}
-                    </div>
+    .navbar .nav-link:hover {
+        color: #ff5f94 !important;
+        background: #ffe5ef;
+    }
 
-                    {% if form.non_field_errors %}
-                        <div class="alert alert-danger py-2">
-                            {{ form.non_field_errors }}
+    .register-page {
+        max-width: 1120px;
+        margin: 0 auto;
+        min-height: calc(100vh - 170px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .register-shell {
+        width: 100%;
+        overflow: hidden;
+        border-radius: 42px;
+        background: rgba(255, 255, 255, 0.86);
+        border: 1px solid rgba(255, 182, 206, 0.55);
+        box-shadow: 0 26px 70px rgba(255, 127, 168, 0.19);
+    }
+
+    .register-form-side {
+        height: 100%;
+        padding: 50px;
+        background: rgba(255, 255, 255, 0.94);
+    }
+
+    .register-icon {
+        width: 74px;
+        height: 74px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 16px;
+        border-radius: 28px;
+        background: linear-gradient(135deg, #ffe1ec, #fff2bd);
+        color: #ff6f9e;
+        font-size: 34px;
+        box-shadow: 0 14px 30px rgba(255, 127, 168, 0.16);
+    }
+
+    .register-form-side h2 {
+        color: #4d3340;
+        font-weight: 950;
+        letter-spacing: -0.8px;
+    }
+
+    .register-subtitle {
+        color: #7b5d69;
+        font-weight: 650;
+    }
+
+    .register-form-side label {
+        margin-bottom: 8px;
+        color: #4d3340;
+        font-weight: 900;
+    }
+
+    .register-form-side input {
+        width: 100%;
+        min-height: 52px;
+        padding: 12px 18px;
+        border-radius: 18px;
+        border: 1px solid rgba(255, 127, 168, 0.35);
+        background: #fffafe;
+        color: #4d3340;
+        font-weight: 700;
+        box-shadow: none;
+        outline: none;
+        transition: 0.2s ease;
+    }
+
+    .register-form-side input:focus {
+        border-color: #ff7fa8;
+        box-shadow: 0 0 0 0.24rem rgba(255, 127, 168, 0.16);
+    }
+
+    .register-form-side input::placeholder {
+        color: #b995a3;
+    }
+
+    .register-submit-btn {
+        width: 100%;
+        min-height: 52px;
+        border: none;
+        border-radius: 999px;
+        color: white;
+        background: linear-gradient(135deg, #ff6f9e, #ff9fbd);
+        font-weight: 950;
+        box-shadow: 0 16px 32px rgba(255, 111, 158, 0.28);
+        transition: 0.22s ease;
+    }
+
+    .register-submit-btn:hover {
+        transform: translateY(-3px);
+        color: white;
+    }
+
+    .register-login-text {
+        color: #7b5d69;
+        font-weight: 700;
+    }
+
+    .register-login-text a {
+        color: #ff6f9e;
+        font-weight: 950;
+        text-decoration: none;
+    }
+
+    .register-login-text a:hover {
+        color: #d7477a;
+    }
+
+    .register-error {
+        margin-top: 6px;
+        color: #d7477a;
+        font-size: 14px;
+        font-weight: 800;
+    }
+
+    .alert {
+        border: none;
+        border-radius: 18px;
+        color: #a73756;
+        background: #ffe1ea;
+        font-weight: 750;
+    }
+
+    .register-art {
+        position: relative;
+        min-height: 620px;
+        height: 100%;
+        padding: 46px;
+        background:
+            radial-gradient(circle at 78% 16%, rgba(255, 225, 142, 0.74), transparent 26%),
+            radial-gradient(circle at 16% 88%, rgba(255, 182, 206, 0.58), transparent 30%),
+            linear-gradient(135deg, #fff7df 0%, #fff0f7 52%, #fffaf0 100%);
+    }
+
+    .register-art::before {
+        content: "";
+        position: absolute;
+        inset: 18px;
+        border-radius: 34px;
+        border: 1px dashed rgba(255, 143, 177, 0.34);
+        pointer-events: none;
+    }
+
+    .register-pill {
+        position: relative;
+        z-index: 2;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 18px;
+        margin-bottom: 20px;
+        border-radius: 999px;
+        color: #d7477a;
+        background: linear-gradient(135deg, #ffe3ee, #fff3c9);
+        border: 1px solid rgba(255, 143, 177, 0.35);
+        font-weight: 900;
+        box-shadow: 0 12px 24px rgba(255, 127, 168, 0.14);
+    }
+
+    .register-art h1 {
+        position: relative;
+        z-index: 2;
+        max-width: 430px;
+        color: #4d3340;
+        font-size: clamp(36px, 4.5vw, 58px);
+        font-weight: 950;
+        line-height: 1.08;
+        letter-spacing: -1.6px;
+    }
+
+    .register-art p {
+        position: relative;
+        z-index: 2;
+        max-width: 450px;
+        margin-top: 18px;
+        color: #7b5d69;
+        font-size: 17px;
+        font-weight: 650;
+        line-height: 1.8;
+    }
+
+    .register-benefits {
+        position: relative;
+        z-index: 2;
+        display: grid;
+        gap: 12px;
+        margin-top: 26px;
+        max-width: 430px;
+    }
+
+    .benefit-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 14px 16px;
+        border-radius: 22px;
+        background: rgba(255, 255, 255, 0.72);
+        border: 1px solid rgba(255, 182, 206, 0.36);
+        color: #684756;
+        font-weight: 800;
+        box-shadow: 0 12px 26px rgba(255, 127, 168, 0.10);
+    }
+
+    .benefit-icon {
+        width: 38px;
+        height: 38px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 15px;
+        background: linear-gradient(135deg, #ffe1ec, #fff2bd);
+        color: #ff6f9e;
+        flex-shrink: 0;
+    }
+
+    .register-visual {
+        position: absolute;
+        left: 46px;
+        right: 46px;
+        bottom: 38px;
+        height: 190px;
+    }
+
+    .register-cloud {
+        position: absolute;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.88);
+        box-shadow: 0 14px 30px rgba(255, 182, 206, 0.18);
+    }
+
+    .register-cloud.one {
+        width: 110px;
+        height: 42px;
+        top: 0;
+        left: 30px;
+    }
+
+    .register-cloud.two {
+        width: 130px;
+        height: 48px;
+        top: 22px;
+        right: 30px;
+    }
+
+    .register-house {
+        position: absolute;
+        bottom: 44px;
+        width: 120px;
+        height: 100px;
+        border-radius: 26px 26px 14px 14px;
+        background: linear-gradient(180deg, #ff9fbd, #ffd0df);
+        border: 4px solid rgba(255, 255, 255, 0.7);
+        box-shadow: 0 16px 30px rgba(137, 83, 102, 0.16);
+    }
+
+    .register-house::before {
+        content: "";
+        position: absolute;
+        left: 16px;
+        right: 16px;
+        top: -44px;
+        height: 74px;
+        transform: rotate(45deg);
+        border-radius: 20px;
+        background: linear-gradient(135deg, #ffe08a, #fff1be);
+        border-left: 4px solid rgba(255, 255, 255, 0.7);
+        border-top: 4px solid rgba(255, 255, 255, 0.7);
+    }
+
+    .register-house::after {
+        content: "";
+        position: absolute;
+        left: 43px;
+        bottom: 0;
+        width: 34px;
+        height: 48px;
+        border-radius: 18px 18px 8px 8px;
+        background: #ff6f9e;
+    }
+
+    .register-house.one {
+        left: 48px;
+    }
+
+    .register-house.two {
+        right: 56px;
+        transform: scale(0.85);
+        background: linear-gradient(180deg, #b9e9ff, #e4f8ff);
+    }
+
+    .register-road {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 54px;
+        border-radius: 999px 999px 0 0;
+        background: linear-gradient(180deg, #d7c7ff, #c9b8f7);
+    }
+
+    .register-road::after {
+        content: "";
+        position: absolute;
+        left: 54px;
+        right: 54px;
+        top: 25px;
+        height: 5px;
+        border-radius: 999px;
+        background: repeating-linear-gradient(
+            90deg,
+            rgba(255, 255, 255, 0.86) 0 30px,
+            transparent 30px 55px
+        );
+    }
+
+    .register-heart {
+        position: absolute;
+        right: 12px;
+        top: 70px;
+        width: 62px;
+        height: 62px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 24px;
+        background: rgba(255, 231, 239, 0.92);
+        box-shadow: 0 14px 32px rgba(255, 127, 168, 0.22);
+        font-size: 30px;
+        animation: registerFloat 3s ease-in-out infinite;
+    }
+
+    @keyframes registerFloat {
+        0%, 100% {
+            transform: translateY(0);
+        }
+        50% {
+            transform: translateY(-10px);
+        }
+    }
+
+    @media (max-width: 992px) {
+        .register-art {
+            min-height: 520px;
+        }
+
+        .register-form-side {
+            padding: 34px 26px;
+        }
+
+        .register-visual {
+            transform: scale(0.82);
+            transform-origin: left bottom;
+            left: 30px;
+            right: 20px;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .register-shell {
+            border-radius: 30px;
+        }
+
+        .register-art {
+            padding: 32px 26px;
+            min-height: 430px;
+        }
+
+        .register-art h1 {
+            letter-spacing: -1px;
+        }
+
+        .register-visual {
+            display: none;
+        }
+    }
+</style>
+
+<div class="register-page">
+    <div class="register-shell">
+        <div class="row g-0">
+            <div class="col-lg-6">
+                <section class="register-form-side d-flex flex-column justify-content-center">
+                    <div class="text-center mb-4">
+                        <div class="register-icon">
+                            <i class="bi bi-person-plus-fill"></i>
                         </div>
-                    {% endif %}
 
-                    <button type="submit" class="btn btn-success w-100 rounded-3">Daftar</button>
-                </form>
+                        <h2 class="mb-2">Registrasi Citizen</h2>
 
-                <p class="text-center mt-4 mb-0">
-                    Sudah punya akun? <a href="{% url 'login' %}">Login</a>
-                </p>
+                        <p class="register-subtitle mb-0">
+                            Buat akun warga untuk mulai menggunakan portal LONG City.
+                        </p>
+                    </div>
+
+                    <form method="post" novalidate>
+                        {% csrf_token %}
+
+                        <div class="mb-3">
+                            <label for="{{ form.username.id_for_label }}" class="form-label">
+                                Nama pengguna
+                            </label>
+                            {{ form.username }}
+
+                            {% if form.username.errors %}
+                                <div class="register-error">
+                                    {{ form.username.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.email.id_for_label }}" class="form-label">
+                                Alamat email
+                            </label>
+                            {{ form.email }}
+
+                            {% if form.email.errors %}
+                                <div class="register-error">
+                                    {{ form.email.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.password1.id_for_label }}" class="form-label">
+                                Sandi
+                            </label>
+                            {{ form.password1 }}
+
+                            {% if form.password1.errors %}
+                                <div class="register-error">
+                                    {{ form.password1.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="{{ form.password2.id_for_label }}" class="form-label">
+                                Konfirmasi sandi
+                            </label>
+                            {{ form.password2 }}
+
+                            {% if form.password2.errors %}
+                                <div class="register-error">
+                                    {{ form.password2.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        {% if form.non_field_errors %}
+                            <div class="alert py-2">
+                                {{ form.non_field_errors }}
+                            </div>
+                        {% endif %}
+
+                        <button type="submit" class="btn register-submit-btn">
+                            <i class="bi bi-heart-fill me-1"></i>
+                            Daftar Sekarang
+                        </button>
+                    </form>
+
+                    <p class="text-center mt-4 mb-0 register-login-text">
+                        Sudah punya akun?
+                        <a href="{% url 'login' %}">
+                            Login
+                        </a>
+                    </p>
+                </section>
+            </div>
+
+            <div class="col-lg-6">
+                <section class="register-art">
+                    <span class="register-pill">
+                        ✨ Warga Baru LONG City
+                    </span>
+
+                    <h1>
+                        Gabung jadi bagian kota yang manis 💗
+                    </h1>
+
+                    <p>
+                        Daftar akun untuk membuat laporan, memantau perkembangan,
+                        dan ikut menjaga LONG City tetap nyaman untuk semua.
+                    </p>
+
+                    <div class="register-benefits">
+                        <div class="benefit-item">
+                            <span class="benefit-icon">
+                                <i class="bi bi-pencil-square"></i>
+                            </span>
+                            <span>Buat laporan dengan mudah</span>
+                        </div>
+
+                        <div class="benefit-item">
+                            <span class="benefit-icon">
+                                <i class="bi bi-search-heart"></i>
+                            </span>
+                            <span>Pantau status laporan</span>
+                        </div>
+
+                        <div class="benefit-item">
+                            <span class="benefit-icon">
+                                <i class="bi bi-flower1"></i>
+                            </span>
+                            <span>Bantu kota lebih rapi</span>
+                        </div>
+                    </div>
+
+                    <div class="register-visual">
+                        <div class="register-cloud one"></div>
+                        <div class="register-cloud two"></div>
+
+                        <div class="register-house one"></div>
+                        <div class="register-house two"></div>
+
+                        <div class="register-heart">💗</div>
+                        <div class="register-road"></div>
+                    </div>
+                </section>
             </div>
         </div>
     </div>

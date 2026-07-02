@@ -3,42 +3,275 @@
 {% block title %}Tambah Laporan{% endblock %}
 
 {% block content %}
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
-        <li class="breadcrumb-item"><a href="{% url 'report_list' %}">Reports</a></li>
-        <li class="breadcrumb-item active" aria-current="page">Tambah Laporan</li>
-    </ol>
-</nav>
+<style>
+    .cute-form-page {
+        color: #573845;
+    }
 
-<h1 class="mb-4">Tambah Laporan</h1>
+    .cute-form-hero {
+        position: relative;
+        overflow: hidden;
+        padding: 34px;
+        margin-bottom: 24px;
+        border-radius: 32px;
+        background:
+            radial-gradient(circle at 88% 18%, rgba(255, 216, 107, 0.58), transparent 28%),
+            radial-gradient(circle at 10% 90%, rgba(255, 182, 206, 0.5), transparent 32%),
+            linear-gradient(135deg, #fff8df 0%, #fff0f7 55%, #fffaf0 100%);
+        border: 1px solid rgba(255, 182, 206, 0.5);
+        box-shadow: 0 18px 45px rgba(255, 127, 168, 0.16);
+    }
 
-<form method="POST" id="reportForm">
-    {% csrf_token %}
+    .cute-form-hero::after {
+        content: "📝 🌷 🏘️ 💛";
+        position: absolute;
+        right: 30px;
+        bottom: 24px;
+        font-size: clamp(42px, 7vw, 82px);
+        letter-spacing: 8px;
+        opacity: 0.9;
+    }
 
-    <div class="mb-3">
-        <label for="{{ form.title.id_for_label }}" class="form-label">Title</label>
-        {{ form.title }}
+    .cute-badge-title {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 9px 16px;
+        margin-bottom: 16px;
+        border-radius: 999px;
+        color: #c74474;
+        background: rgba(255, 224, 235, 0.92);
+        font-weight: 900;
+    }
+
+    .cute-form-hero h1 {
+        position: relative;
+        z-index: 1;
+        max-width: 720px;
+        margin-bottom: 12px;
+        color: #573845;
+        font-weight: 900;
+        letter-spacing: -0.8px;
+    }
+
+    .cute-form-hero p {
+        position: relative;
+        z-index: 1;
+        max-width: 680px;
+        color: #80636e;
+        font-weight: 600;
+        line-height: 1.8;
+    }
+
+    .cute-form-card {
+        padding: 28px;
+        border-radius: 28px;
+        background: rgba(255, 255, 255, 0.82);
+        border: 1px solid rgba(255, 182, 206, 0.45);
+        box-shadow: 0 14px 34px rgba(255, 127, 168, 0.12);
+    }
+
+    .cute-form-card label {
+        margin-bottom: 8px;
+        color: #573845;
+        font-weight: 900;
+    }
+
+    .cute-form-card input,
+    .cute-form-card select,
+    .cute-form-card textarea {
+        width: 100%;
+        min-height: 48px;
+        padding: 12px 16px;
+        border-radius: 18px;
+        border: 1px solid rgba(255, 127, 168, 0.32);
+        background: #fffafe;
+        color: #573845;
+        font-weight: 600;
+        outline: none;
+        box-shadow: none;
+        transition: 0.2s ease;
+    }
+
+    .cute-form-card textarea {
+        min-height: 150px;
+        resize: vertical;
+    }
+
+    .cute-form-card input:focus,
+    .cute-form-card select:focus,
+    .cute-form-card textarea:focus {
+        border-color: #ff7fa8;
+        box-shadow: 0 0 0 0.22rem rgba(255, 127, 168, 0.16);
+    }
+
+    .cute-help-box {
+        padding: 18px 20px;
+        border-radius: 22px;
+        background: linear-gradient(135deg, #fff0f7, #fff8df);
+        border: 1px solid rgba(255, 182, 206, 0.42);
+        color: #80636e;
+        font-weight: 700;
+    }
+
+    .cute-help-box ul {
+        padding-left: 20px;
+        margin-bottom: 0;
+    }
+
+    .cute-help-box li {
+        margin-bottom: 8px;
+    }
+
+    .cute-help-box li:last-child {
+        margin-bottom: 0;
+    }
+
+    .cute-btn {
+        border-radius: 999px !important;
+        border: none !important;
+        padding: 11px 20px;
+        font-weight: 900;
+        transition: 0.2s ease;
+    }
+
+    .cute-btn:hover {
+        transform: translateY(-1px);
+    }
+
+    .cute-btn-primary {
+        color: white !important;
+        background: linear-gradient(135deg, #ff6f9e, #ff9fbd) !important;
+        box-shadow: 0 10px 22px rgba(255, 111, 158, 0.24);
+    }
+
+    .cute-btn-secondary {
+        color: #73515e !important;
+        background: linear-gradient(135deg, #f3e4eb, #ffffff) !important;
+        border: 1px solid rgba(255, 182, 206, 0.45) !important;
+    }
+
+    .cute-error {
+        margin-top: 6px;
+        color: #c74474;
+        font-size: 14px;
+        font-weight: 700;
+    }
+
+    @media (max-width: 768px) {
+        .cute-form-hero,
+        .cute-form-card {
+            padding: 24px;
+        }
+
+        .cute-form-hero::after {
+            position: static;
+            display: block;
+            margin-top: 22px;
+            font-size: 44px;
+            letter-spacing: 4px;
+        }
+    }
+</style>
+
+<div class="cute-form-page">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="{% url 'home' %}">Home</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="{% url 'report_list' %}">Reports</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">Tambah Laporan</li>
+        </ol>
+    </nav>
+
+    <section class="cute-form-hero">
+        <span class="cute-badge-title">
+            ✨ Form Laporan Baru
+        </span>
+
+        <h1>Tambah Laporan untuk LONG City 💗</h1>
+
+        <p class="mb-0">
+            Ceritakan masalah yang kamu temukan di sekitar kota dengan jelas.
+            Laporan yang rapi akan membantu admin memprosesnya lebih cepat.
+        </p>
+    </section>
+
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="cute-form-card">
+                <form method="POST" id="reportForm">
+                    {% csrf_token %}
+
+                    <div class="mb-3">
+                        <label for="{{ form.title.id_for_label }}" class="form-label">
+                            📝 Judul Laporan
+                        </label>
+                        {{ form.title }}
+                        {% if form.title.errors %}
+                            <div class="cute-error">{{ form.title.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.category.id_for_label }}" class="form-label">
+                            🏷️ Kategori
+                        </label>
+                        {{ form.category }}
+                        {% if form.category.errors %}
+                            <div class="cute-error">{{ form.category.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.location.id_for_label }}" class="form-label">
+                            📍 Lokasi
+                        </label>
+                        {{ form.location }}
+                        {% if form.location.errors %}
+                            <div class="cute-error">{{ form.location.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="{{ form.description.id_for_label }}" class="form-label">
+                            💬 Deskripsi
+                        </label>
+                        {{ form.description }}
+                        {% if form.description.errors %}
+                            <div class="cute-error">{{ form.description.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="d-flex flex-wrap gap-2">
+                        <button type="submit" class="btn cute-btn cute-btn-primary" id="submitBtn">
+                            💛 Submit Laporan
+                        </button>
+
+                        <a href="{% url 'report_list' %}" class="btn cute-btn cute-btn-secondary">
+                            Kembali
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="cute-help-box">
+                <h5 class="fw-bold mb-3">Tips laporan yang baik 🌷</h5>
+                <ul>
+                    <li>Gunakan judul yang singkat dan jelas.</li>
+                    <li>Pilih kategori yang paling sesuai.</li>
+                    <li>Tulis lokasi secara spesifik.</li>
+                    <li>Jelaskan kondisi masalah dengan detail.</li>
+                </ul>
+            </div>
+        </div>
     </div>
-
-    <div class="mb-3">
-        <label for="{{ form.category.id_for_label }}" class="form-label">Category</label>
-        {{ form.category }}
-    </div>
-
-    <div class="mb-3">
-        <label for="{{ form.description.id_for_label }}" class="form-label">Description</label>
-        {{ form.description }}
-    </div>
-
-    <div class="mb-3">
-        <label for="{{ form.location.id_for_label }}" class="form-label">Location</label>
-        {{ form.location }}
-    </div>
-
-    <button type="submit" class="btn btn-primary" id="submitBtn">Submit</button>
-    <a href="{% url 'report_list' %}" class="btn btn-secondary">Kembali</a>
-</form>
+</div>
 {% endblock %}
 
 {% block scripts %}

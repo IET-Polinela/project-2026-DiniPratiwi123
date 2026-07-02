@@ -1,16 +1,44 @@
+from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Count
 from django.http import JsonResponse
+from django.shortcuts import redirect
 from django.views import View
 from django.views.generic import TemplateView
 
 from main_app.models import Report, STATUS_CHOICES
 
 
-class DashboardView(TemplateView):
+class AdminDashboardRequiredMixin(LoginRequiredMixin):
+    """
+    Membatasi akses dashboard dan API statistik hanya untuk admin/staff.
+    - Pengguna belum login: redirect ke halaman login.
+    - Warga biasa/non-admin: redirect ke daftar laporan (HTTP 302).
+    - Admin/staff/superuser: diizinkan mengakses dashboard.
+    """
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return self.handle_no_permission()
+
+        is_admin_dashboard = (
+            request.user.is_staff
+            or request.user.is_superuser
+            or getattr(request.user, 'is_admin', False)
+        )
+
+        if not is_admin_dashboard:
+            messages.error(request, 'Akses dashboard hanya untuk admin.')
+            return redirect('report_list')
+
+        return super().dispatch(request, *args, **kwargs)
+
+
+class DashboardView(AdminDashboardRequiredMixin, TemplateView):
     template_name = 'dashboard_24782041/dashboard.html'
 
 
-class DashboardStatsJsonView(View):
+class DashboardStatsJsonView(AdminDashboardRequiredMixin, View):
     def get(self, request):
         status_labels = dict(STATUS_CHOICES)
 
@@ -38,8 +66,13 @@ class DashboardStatsJsonView(View):
             .order_by('category')
         )
 
-        latest_reported = Report.objects.filter(status='REPORTED').order_by('-created_at')[:5]
-        latest_resolved = Report.objects.filter(status='RESOLVED').order_by('-created_at')[:5]
+        latest_reported = Report.objects.filter(
+            status='REPORTED'
+        ).order_by('-created_at')[:5]
+
+        latest_resolved = Report.objects.filter(
+            status='RESOLVED'
+        ).order_by('-created_at')[:5]
 
         def serialize_report(report):
             return {
@@ -55,8 +88,14 @@ class DashboardStatsJsonView(View):
         data = {
             'status_distribution': status_distribution,
             'category_distribution': category_distribution,
-            'latest_reported': [serialize_report(report) for report in latest_reported],
-            'latest_resolved': [serialize_report(report) for report in latest_resolved],
+            'latest_reported': [
+                serialize_report(report)
+                for report in latest_reported
+            ],
+            'latest_resolved': [
+                serialize_report(report)
+                for report in latest_resolved
+            ],
         }
 
         return JsonResponse(data)

@@ -3,41 +3,519 @@
 {% block title %}About{% endblock %}
 
 {% block content %}
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
-        <li class="breadcrumb-item active" aria-current="page">About</li>
-    </ol>
-</nav>
+<style>
+    body {
+        background:
+            radial-gradient(circle at 10% 12%, rgba(255, 216, 107, 0.30), transparent 28%),
+            radial-gradient(circle at 90% 14%, rgba(255, 166, 196, 0.28), transparent 30%),
+            linear-gradient(135deg, #fffaf0 0%, #fff3f8 48%, #fff9df 100%) !important;
+        color: #4d3340;
+    }
 
-<div class="hero-box">
-    <h2>Tentang LONG City</h2>
-    <p class="mb-0">
-        LONG City merupakan aplikasi pelaporan kota yang membantu masyarakat menyampaikan laporan secara terstruktur.
-    </p>
-</div>
+    .navbar,
+    .navbar.bg-primary,
+    .navbar-dark,
+    .bg-primary {
+        background: rgba(255, 255, 255, 0.84) !important;
+        backdrop-filter: blur(18px);
+        border-bottom: 1px solid rgba(255, 182, 206, 0.45);
+        box-shadow: 0 12px 35px rgba(255, 127, 168, 0.12);
+    }
 
-<div class="row g-4">
-    <div class="col-md-6">
-        <div class="card info-card h-100">
-            <div class="card-body">
-                <h4>Tujuan Aplikasi</h4>
-                <p class="mb-0">
-                    Aplikasi ini digunakan untuk mencatat, mengelola, dan memantau laporan masyarakat terkait kondisi lingkungan atau fasilitas umum.
+    .navbar-brand {
+        color: #ff6f9e !important;
+        font-weight: 900;
+        letter-spacing: -0.4px;
+    }
+
+    .navbar-brand::before {
+        content: "💗";
+        margin-right: 8px;
+    }
+
+    .navbar .nav-link {
+        color: #6b4a58 !important;
+        font-weight: 800;
+        border-radius: 999px;
+        padding: 8px 14px !important;
+        margin: 0 2px;
+        transition: 0.2s ease;
+    }
+
+    .navbar .nav-link:hover {
+        color: #ff5f94 !important;
+        background: #ffe5ef;
+    }
+
+    .about-page {
+        max-width: 1180px;
+        margin: 0 auto;
+    }
+
+    .breadcrumb {
+        padding: 12px 18px;
+        margin-bottom: 20px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.75);
+        border: 1px solid rgba(255, 182, 206, 0.42);
+        box-shadow: 0 12px 30px rgba(255, 127, 168, 0.10);
+    }
+
+    .breadcrumb-item a {
+        color: #ff6f9e;
+        font-weight: 900;
+        text-decoration: none;
+    }
+
+    .breadcrumb-item.active {
+        color: #7b5d69;
+        font-weight: 800;
+    }
+
+    .about-hero {
+        position: relative;
+        overflow: hidden;
+        min-height: 440px;
+        padding: 48px;
+        margin-bottom: 28px;
+        border-radius: 42px;
+        background:
+            radial-gradient(circle at 80% 18%, rgba(255, 225, 142, 0.72), transparent 26%),
+            radial-gradient(circle at 16% 88%, rgba(255, 182, 206, 0.55), transparent 30%),
+            linear-gradient(135deg, rgba(255, 255, 255, 0.92), rgba(255, 241, 247, 0.94), rgba(255, 249, 225, 0.96));
+        border: 1px solid rgba(255, 182, 206, 0.55);
+        box-shadow: 0 26px 70px rgba(255, 127, 168, 0.19);
+    }
+
+    .about-hero::before {
+        content: "";
+        position: absolute;
+        inset: 18px;
+        border-radius: 34px;
+        border: 1px dashed rgba(255, 143, 177, 0.35);
+        pointer-events: none;
+    }
+
+    .about-hero-content {
+        position: relative;
+        z-index: 2;
+        max-width: 650px;
+    }
+
+    .about-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 18px;
+        margin-bottom: 18px;
+        border-radius: 999px;
+        color: #d7477a;
+        background: linear-gradient(135deg, #ffe3ee, #fff3c9);
+        border: 1px solid rgba(255, 143, 177, 0.35);
+        font-weight: 900;
+        box-shadow: 0 12px 24px rgba(255, 127, 168, 0.14);
+    }
+
+    .about-hero h1 {
+        margin-bottom: 18px;
+        color: #4d3340;
+        font-size: clamp(38px, 5vw, 66px);
+        font-weight: 950;
+        line-height: 1.06;
+        letter-spacing: -1.8px;
+    }
+
+    .about-highlight {
+        color: #ff6f9e;
+    }
+
+    .about-hero p {
+        max-width: 610px;
+        color: #7b5d69;
+        font-size: 18px;
+        font-weight: 650;
+        line-height: 1.8;
+    }
+
+    .about-city {
+        position: absolute;
+        right: 38px;
+        bottom: 34px;
+        width: 410px;
+        height: 270px;
+        z-index: 1;
+    }
+
+    .about-cloud {
+        position: absolute;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.88);
+        box-shadow: 0 14px 30px rgba(255, 182, 206, 0.18);
+    }
+
+    .about-cloud.one {
+        width: 110px;
+        height: 42px;
+        top: 10px;
+        left: 25px;
+    }
+
+    .about-cloud.two {
+        width: 130px;
+        height: 48px;
+        top: 42px;
+        right: 12px;
+    }
+
+    .about-sun {
+        position: absolute;
+        top: 6px;
+        left: 170px;
+        width: 74px;
+        height: 74px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #ffd86b, #fff0a8);
+        box-shadow: 0 12px 35px rgba(255, 216, 107, 0.42);
+    }
+
+    .about-building {
+        position: absolute;
+        bottom: 54px;
+        border-radius: 20px 20px 12px 12px;
+        border: 4px solid rgba(255, 255, 255, 0.68);
+        box-shadow: 0 16px 30px rgba(137, 83, 102, 0.17);
+    }
+
+    .about-building::before,
+    .about-building::after {
+        content: "";
+        position: absolute;
+        top: 22px;
+        width: 14px;
+        height: 16px;
+        border-radius: 6px;
+        background: rgba(255, 255, 255, 0.75);
+    }
+
+    .about-building::before {
+        left: 20px;
+    }
+
+    .about-building::after {
+        right: 20px;
+    }
+
+    .ab1 {
+        left: 24px;
+        width: 86px;
+        height: 118px;
+        background: linear-gradient(180deg, #ff9fbd, #ffd0df);
+    }
+
+    .ab2 {
+        left: 112px;
+        width: 96px;
+        height: 160px;
+        background: linear-gradient(180deg, #ffe08a, #fff1be);
+    }
+
+    .ab3 {
+        left: 212px;
+        width: 100px;
+        height: 190px;
+        background: linear-gradient(180deg, #b9e9ff, #e4f8ff);
+    }
+
+    .ab4 {
+        left: 314px;
+        width: 78px;
+        height: 132px;
+        background: linear-gradient(180deg, #ffc2d7, #ffe3ed);
+    }
+
+    .about-road {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 62px;
+        border-radius: 999px 999px 0 0;
+        background: linear-gradient(180deg, #d7c7ff, #c9b8f7);
+    }
+
+    .about-road::after {
+        content: "";
+        position: absolute;
+        left: 52px;
+        right: 52px;
+        top: 28px;
+        height: 5px;
+        border-radius: 999px;
+        background: repeating-linear-gradient(
+            90deg,
+            rgba(255, 255, 255, 0.86) 0 30px,
+            transparent 30px 55px
+        );
+    }
+
+    .about-heart {
+        position: absolute;
+        right: 4px;
+        top: 108px;
+        width: 58px;
+        height: 58px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 22px;
+        background: rgba(255, 231, 239, 0.92);
+        box-shadow: 0 14px 32px rgba(255, 127, 168, 0.22);
+        font-size: 28px;
+        animation: aboutFloat 3s ease-in-out infinite;
+    }
+
+    @keyframes aboutFloat {
+        0%, 100% {
+            transform: translateY(0);
+        }
+        50% {
+            transform: translateY(-10px);
+        }
+    }
+
+    .about-section-grid {
+        margin-top: 30px;
+    }
+
+    .about-card {
+        position: relative;
+        height: 100%;
+        overflow: hidden;
+        padding: 30px;
+        border-radius: 32px;
+        background: rgba(255, 255, 255, 0.86);
+        border: 1px solid rgba(255, 182, 206, 0.45);
+        box-shadow: 0 18px 42px rgba(255, 127, 168, 0.13);
+        transition: 0.22s ease;
+    }
+
+    .about-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 24px 55px rgba(255, 127, 168, 0.20);
+    }
+
+    .about-card::after {
+        content: "";
+        position: absolute;
+        width: 120px;
+        height: 120px;
+        right: -34px;
+        top: -34px;
+        border-radius: 50%;
+        background: rgba(255, 216, 107, 0.22);
+    }
+
+    .about-icon {
+        position: relative;
+        z-index: 1;
+        width: 66px;
+        height: 66px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 20px;
+        border-radius: 24px;
+        background: linear-gradient(135deg, #ffe1ec, #fff2bd);
+        color: #ff6f9e;
+        font-size: 30px;
+        box-shadow: 0 12px 25px rgba(255, 127, 168, 0.14);
+    }
+
+    .about-card h3 {
+        position: relative;
+        z-index: 1;
+        margin-bottom: 12px;
+        color: #4d3340;
+        font-weight: 950;
+        letter-spacing: -0.5px;
+    }
+
+    .about-card p {
+        position: relative;
+        z-index: 1;
+        margin-bottom: 0;
+        color: #7b5d69;
+        font-size: 16px;
+        font-weight: 650;
+        line-height: 1.8;
+    }
+
+    .about-wide-card {
+        margin-top: 28px;
+        padding: 32px;
+        border-radius: 34px;
+        background:
+            radial-gradient(circle at 88% 20%, rgba(255, 216, 107, 0.28), transparent 30%),
+            linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(255, 241, 247, 0.9));
+        border: 1px solid rgba(255, 182, 206, 0.45);
+        box-shadow: 0 18px 42px rgba(255, 127, 168, 0.13);
+    }
+
+    .about-wide-card h3 {
+        color: #4d3340;
+        font-weight: 950;
+    }
+
+    .about-wide-card p {
+        color: #7b5d69;
+        font-weight: 650;
+        line-height: 1.8;
+    }
+
+    .about-mini-list {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+        margin-top: 20px;
+    }
+
+    .about-mini-item {
+        padding: 18px;
+        border-radius: 22px;
+        background: rgba(255, 255, 255, 0.78);
+        border: 1px solid rgba(255, 182, 206, 0.38);
+        color: #684756;
+        font-weight: 850;
+    }
+
+    @media (max-width: 992px) {
+        .about-hero {
+            padding: 34px;
+        }
+
+        .about-city {
+            position: relative;
+            right: auto;
+            bottom: auto;
+            width: 100%;
+            max-width: 410px;
+            margin-top: 32px;
+        }
+
+        .about-mini-list {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .about-hero {
+            padding: 26px;
+            border-radius: 30px;
+        }
+
+        .about-city {
+            transform: scale(0.86);
+            transform-origin: left top;
+            margin-bottom: -34px;
+        }
+    }
+</style>
+
+<div class="about-page">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="{% url 'home' %}">Home</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">About</li>
+        </ol>
+    </nav>
+
+    <section class="about-hero">
+        <div class="about-hero-content">
+            <span class="about-pill">
+                ✨ Tentang LONG City
+            </span>
+
+            <h1>
+                Mengenal <span class="about-highlight">LONG City</span> lebih dekat 💗
+            </h1>
+
+            <p class="mb-0">
+                LONG City merupakan aplikasi pelaporan kota yang membantu masyarakat
+                menyampaikan laporan secara terstruktur.
+            </p>
+        </div>
+
+        <div class="about-city">
+            <div class="about-cloud one"></div>
+            <div class="about-cloud two"></div>
+            <div class="about-sun"></div>
+
+            <div class="about-building ab1"></div>
+            <div class="about-building ab2"></div>
+            <div class="about-building ab3"></div>
+            <div class="about-building ab4"></div>
+
+            <div class="about-heart">💗</div>
+            <div class="about-road"></div>
+        </div>
+    </section>
+
+    <div class="row g-4 about-section-grid">
+        <div class="col-md-6">
+            <div class="about-card">
+                <div class="about-icon">
+                    <i class="bi bi-bullseye"></i>
+                </div>
+
+                <h3>Tujuan Aplikasi</h3>
+
+                <p>
+                    Aplikasi ini digunakan untuk mencatat, mengelola, dan memantau
+                    laporan masyarakat terkait kondisi lingkungan atau fasilitas umum.
+                </p>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="about-card">
+                <div class="about-icon">
+                    <i class="bi bi-heart-pulse"></i>
+                </div>
+
+                <h3>Manfaat</h3>
+
+                <p>
+                    Dengan adanya sistem ini, proses pelaporan menjadi lebih jelas,
+                    status dapat dipantau, dan pengelolaan data menjadi lebih rapi.
                 </p>
             </div>
         </div>
     </div>
 
-    <div class="col-md-6">
-        <div class="card info-card h-100">
-            <div class="card-body">
-                <h4>Manfaat</h4>
-                <p class="mb-0">
-                    Dengan adanya sistem ini, proses pelaporan menjadi lebih jelas, status dapat dipantau, dan pengelolaan data menjadi lebih rapi.
-                </p>
+    <section class="about-wide-card">
+        <h3>LONG City dibuat untuk kota yang lebih nyaman 🌷</h3>
+
+        <p class="mb-0">
+            Melalui sistem pelaporan yang tertata, masyarakat dan pengelola kota dapat
+            bekerja sama menciptakan lingkungan yang lebih bersih, aman, indah, dan
+            menyenangkan untuk semua warga.
+        </p>
+
+        <div class="about-mini-list">
+            <div class="about-mini-item">
+                💛 Data laporan lebih rapi
+            </div>
+
+            <div class="about-mini-item">
+                🔎 Status mudah dipantau
+            </div>
+
+            <div class="about-mini-item">
+                🌷 Kota lebih terkelola
             </div>
         </div>
-    </div>
+    </section>
 </div>
 {% endblock %}
